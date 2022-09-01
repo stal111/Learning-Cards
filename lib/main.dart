@@ -87,159 +87,142 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return NavigationView(
       appBar: NavigationAppBar(
-          title: Text("Learning Cards"),
-          actions: Container(padding: EdgeInsets.symmetric(horizontal: 10.0), child: Row(
-            children: [
-              Button(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Padding(
-                        padding: EdgeInsets.all(10.0),
-                        child: Icon(FluentIcons.search),
-                      ),
-                      Text("Search")
-                    ],
-                  ),
-                  onPressed: () {
-                    categories.sort((a, b) => a
-                        .toString()
-                        .toLowerCase()
-                        .compareTo(b.toString().toLowerCase()));
-                    setState(() {});
-                  }),
-              Button(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Padding(
-                        padding: EdgeInsets.all(10.0),
-                        child: Icon(FluentIcons.sort),
-                      ),
-                      Text("Sort Categories")
-                    ],
-                  ),
-                  onPressed: () {
-                    categories.sort((a, b) => a
-                        .toString()
-                        .toLowerCase()
-                        .compareTo(b.toString().toLowerCase()));
-                    setState(() {});
-                  }),
-            ],
-          ),)),
+          title: const Text("Learning Cards"),
+          actions: Container(
+            padding: const EdgeInsets.all(10.0),
+            child: Row(
+              children: [
+                Button(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Icon(FluentIcons.search),
+                        Padding(
+                          padding: EdgeInsets.only(left: 10.0),
+                          child: Text("Search"),
+                        )
+                      ],
+                    ),
+                    onPressed: () {
+                      categories.sort((a, b) => a
+                          .toString()
+                          .toLowerCase()
+                          .compareTo(b.toString().toLowerCase()));
+                      setState(() {});
+                    }),
+                Button(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Icon(FluentIcons.sort),
+                        Padding(
+                          padding: EdgeInsets.only(left: 10.0),
+                          child: Text("Sort Categories"),
+                        )
+                      ],
+                    ),
+                    onPressed: () {
+                      categories.sort((a, b) => a
+                          .toString()
+                          .toLowerCase()
+                          .compareTo(b.toString().toLowerCase()));
+                      setState(() {});
+                    }),
+              ],
+            ),
+          )),
       pane: NavigationPane(displayMode: PaneDisplayMode.auto, items: [
         PaneItem(icon: const Icon(FluentIcons.home), title: const Text("Home")),
         PaneItem(
             icon: const Icon(FluentIcons.list), title: const Text("Card Lists"))
       ]),
       content: Container(
-          child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Expanded(child: CategoriesList(categories: categories)),
+          child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Expanded(child: CategoriesList(categories: categories)),
 
-            const Text("Create a category to get started!"),
+          const Text("Create a category to get started!"),
 
-            // children: [
-            //   categories.isNotEmpty
-            //       ? TreeView(
-            //           items: List.generate(
-            //               categories.length,
-            //               (index) => TreeViewItem(
-            //                   content: Text(categories[index]))))
-            //       : const Text("Create a category to get started!"),
-            // ],
+          // children: [
+          //   categories.isNotEmpty
+          //       ? TreeView(
+          //           items: List.generate(
+          //               categories.length,
+          //               (index) => TreeViewItem(
+          //                   content: Text(categories[index]))))
+          //       : const Text("Create a category to get started!"),
+          // ],
 
-            Container(
-              width: 500,
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10.0),
-                    child: FilledButton(
-                        // isValidCategory(inputController.text)
-                        //     ? _addCategory
-                        //     :
-                        // showDialog(context: context, builder: (context) {
-                        //       return ContentDialog(content: Text("Test"), title: Text("Test"), actions: [])
-                        // },),
-                        onPressed: () {
-                          inputController.clear();
+          Container(
+            width: 500,
+            padding: const EdgeInsets.all(20.0),
+            child: FilledButton(
+                onPressed: () {
+                  inputController.clear();
 
-                          showDialog(
-                              context: context,
-                              builder: (context) {
-                                return ContentDialog(
-                                    title: const Text("Create Category"),
-                                    content: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        const Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: Padding(
-                                              padding:
-                                                  EdgeInsets.only(bottom: 10.0),
-                                              child: Text(
-                                                  "Enter the name of the category"),
-                                            )),
-                                        TextBox(
-                                            controller: inputController,
-                                            onChanged: (s) => {
-                                                  setState(() {}),
-                                                  print(inputController.text)
-                                                },
-                                            padding: const EdgeInsets.only(
-                                                top: 5.0, bottom: 10.0))
-                                      ],
-                                    ),
-                                    actions: [
-                                      Button(
-                                          child: const Text("Cancel"),
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          }),
-                                      ValueListenableBuilder(
-                                        valueListenable: inputController,
-                                        builder: (context, value, child) {
-                                          return FilledButton(
-                                            onPressed: isValidCategory(
-                                                    inputController.text)
-                                                ? () {
-                                                    _addCategory(
-                                                        inputController.text);
-
-                                                    Navigator.pop(context);
-                                                  }
-                                                : null,
-                                            child: const Text("Create"),
-                                          );
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        return ContentDialog(
+                            title: const Text("Create Category"),
+                            content: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Padding(
+                                      padding: EdgeInsets.only(bottom: 10.0),
+                                      child: Text(
+                                          "Enter the name of the category"),
+                                    )),
+                                TextBox(
+                                    controller: inputController,
+                                    onChanged: (s) => {
+                                          setState(() {}),
                                         },
-                                      )
-                                    ]);
-                              });
-                        },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
-                            Padding(
-                              padding: EdgeInsets.all(10.0),
-                              child: Icon(FluentIcons.add),
+                                    padding: const EdgeInsets.only(
+                                        top: 5.0, bottom: 10.0))
+                              ],
                             ),
-                            Text("Create Category")
-                          ],
-                        )),
-                  )
-                ],
-              ),
-            )
-          ],
-        ),
+                            actions: [
+                              Button(
+                                  child: const Text("Cancel"),
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  }),
+                              ValueListenableBuilder(
+                                valueListenable: inputController,
+                                builder: (context, value, child) {
+                                  return FilledButton(
+                                    onPressed: isValidCategory(
+                                            inputController.text)
+                                        ? () {
+                                            _addCategory(inputController.text);
+
+                                            Navigator.pop(context);
+                                          }
+                                        : null,
+                                    child: const Text("Create"),
+                                  );
+                                },
+                              )
+                            ]);
+                      });
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Icon(FluentIcons.add),
+                    Padding(
+                        padding: EdgeInsets.only(
+                            left: 10.0, top: 10.0, bottom: 10.0),
+                        child: Text("Create Category"))
+                  ],
+                )),
+          )
+        ],
       )),
     );
   }
