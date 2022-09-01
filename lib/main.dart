@@ -62,17 +62,13 @@ class _MyHomePageState extends State<MyHomePage> {
     super.dispose();
   }
 
-  void _addCategory() {
-    categories.add(inputController.text);
+  void _addCategory(String category) {
+    categories.add(category);
 
     setState(() {});
   }
 
   bool isValidCategory(String category) {
-    print(category.isEmpty);
-    print(categories.contains(category));
-    print(category);
-
     if (category.isEmpty || categories.contains(category)) {
       return false;
     }
@@ -90,18 +86,58 @@ class _MyHomePageState extends State<MyHomePage> {
     // than having to individually change instances of widgets.
 
     return NavigationView(
-      appBar: const NavigationAppBar(
-        title: Text("Learning Cards"),
-      ),
+      appBar: NavigationAppBar(
+          title: Text("Learning Cards"),
+          actions: Container(padding: EdgeInsets.symmetric(horizontal: 10.0), child: Row(
+            children: [
+              Button(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Padding(
+                        padding: EdgeInsets.all(10.0),
+                        child: Icon(FluentIcons.search),
+                      ),
+                      Text("Search")
+                    ],
+                  ),
+                  onPressed: () {
+                    categories.sort((a, b) => a
+                        .toString()
+                        .toLowerCase()
+                        .compareTo(b.toString().toLowerCase()));
+                    setState(() {});
+                  }),
+              Button(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Padding(
+                        padding: EdgeInsets.all(10.0),
+                        child: Icon(FluentIcons.sort),
+                      ),
+                      Text("Sort Categories")
+                    ],
+                  ),
+                  onPressed: () {
+                    categories.sort((a, b) => a
+                        .toString()
+                        .toLowerCase()
+                        .compareTo(b.toString().toLowerCase()));
+                    setState(() {});
+                  }),
+            ],
+          ),)),
       pane: NavigationPane(displayMode: PaneDisplayMode.auto, items: [
-        PaneItem(icon: const Icon(FluentIcons.home), title: const Text("Home"))
+        PaneItem(icon: const Icon(FluentIcons.home), title: const Text("Home")),
+        PaneItem(
+            icon: const Icon(FluentIcons.list), title: const Text("Card Lists"))
       ]),
       content: Container(
           child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text("Categories:"),
             Expanded(child: CategoriesList(categories: categories)),
 
             const Text("Create a category to get started!"),
@@ -132,6 +168,8 @@ class _MyHomePageState extends State<MyHomePage> {
                         //       return ContentDialog(content: Text("Test"), title: Text("Test"), actions: [])
                         // },),
                         onPressed: () {
+                          inputController.clear();
+
                           showDialog(
                               context: context,
                               builder: (context) {
@@ -152,7 +190,10 @@ class _MyHomePageState extends State<MyHomePage> {
                                             )),
                                         TextBox(
                                             controller: inputController,
-                                            onChanged: (s) => setState(() {}),
+                                            onChanged: (s) => {
+                                                  setState(() {}),
+                                                  print(inputController.text)
+                                                },
                                             padding: const EdgeInsets.only(
                                                 top: 5.0, bottom: 10.0))
                                       ],
@@ -163,16 +204,23 @@ class _MyHomePageState extends State<MyHomePage> {
                                           onPressed: () {
                                             Navigator.pop(context);
                                           }),
-                                      FilledButton(
-                                          onPressed: isValidCategory(
-                                                  inputController.text)
-                                              ? () {
-                                                  _addCategory();
-                                                  Navigator.pop(context);
-                                                }
-                                              : () { print(isValidCategory(
-                                              inputController.text));},
-                                          child: const Text("Create"))
+                                      ValueListenableBuilder(
+                                        valueListenable: inputController,
+                                        builder: (context, value, child) {
+                                          return FilledButton(
+                                            onPressed: isValidCategory(
+                                                    inputController.text)
+                                                ? () {
+                                                    _addCategory(
+                                                        inputController.text);
+
+                                                    Navigator.pop(context);
+                                                  }
+                                                : null,
+                                            child: const Text("Create"),
+                                          );
+                                        },
+                                      )
                                     ]);
                               });
                         },
