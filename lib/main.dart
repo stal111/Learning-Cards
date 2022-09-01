@@ -140,9 +140,12 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Expanded(child: CategoriesList(categories: categories)),
-
-          const Text("Create a category to get started!"),
+          Expanded(
+              child: categories.isNotEmpty
+                  ? CategoriesList(categories: categories)
+                  : const Center(
+                      child: Text("Create a category to get started!"),
+                    )),
 
           // children: [
           //   categories.isNotEmpty
