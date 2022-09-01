@@ -110,24 +110,27 @@ class _MyHomePageState extends State<MyHomePage> {
                           .compareTo(b.toString().toLowerCase()));
                       setState(() {});
                     }),
-                Button(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Icon(FluentIcons.sort),
-                        Padding(
-                          padding: EdgeInsets.only(left: 10.0),
-                          child: Text("Sort Categories"),
-                        )
-                      ],
-                    ),
-                    onPressed: () {
-                      categories.sort((a, b) => a
-                          .toString()
-                          .toLowerCase()
-                          .compareTo(b.toString().toLowerCase()));
-                      setState(() {});
-                    }),
+                Tooltip(
+                  message: "Sorts all categories alphabetically.",
+                  child: Button(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          Icon(FluentIcons.sort),
+                          Padding(
+                            padding: EdgeInsets.only(left: 10.0),
+                            child: Text("Sort Categories"),
+                          )
+                        ],
+                      ),
+                      onPressed: () {
+                        categories.sort((a, b) => a
+                            .toString()
+                            .toLowerCase()
+                            .compareTo(b.toString().toLowerCase()));
+                        setState(() {});
+                      }),
+                )
               ],
             ),
           )),
