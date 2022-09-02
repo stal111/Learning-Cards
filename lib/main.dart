@@ -145,7 +145,10 @@ class _MyHomePageState extends State<MyHomePage> {
         children: [
           Expanded(
               child: categories.isNotEmpty
-                  ? CategoriesList(categories: categories)
+                  ? CategoriesList(categories: categories, deleteCategory: (s) {
+                    categories.remove(s);
+                    setState(() {});
+              },)
                   : const Center(
                       child: Text("Create a category to get started!"),
                     )),

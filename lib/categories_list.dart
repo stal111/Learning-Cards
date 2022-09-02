@@ -5,8 +5,9 @@ import 'categories_list_entry.dart';
 class CategoriesList extends StatefulWidget {
 
   final List<String> categories;
+  final StringCallback deleteCategory;
 
-  const CategoriesList({Key? key, required this.categories}) : super(key: key);
+  const CategoriesList({Key? key, required this.categories, required this.deleteCategory}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _ListState();
@@ -20,7 +21,7 @@ class _ListState extends State<CategoriesList> {
       scrollDirection: Axis.vertical,
       padding: const EdgeInsets.all(10),
       children: List.generate(widget.categories.length,
-              (index) => CategoriesListEntry(name: widget.categories[index])),
+              (index) => CategoriesListEntry(name: widget.categories[index], deleteCategory: widget.deleteCategory)),
     );
   }
 }
