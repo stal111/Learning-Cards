@@ -145,10 +145,13 @@ class _MyHomePageState extends State<MyHomePage> {
         children: [
           Expanded(
               child: categories.isNotEmpty
-                  ? CategoriesList(categories: categories, deleteCategory: (s) {
-                    categories.remove(s);
-                    setState(() {});
-              },)
+                  ? CategoriesList(
+                      categories: categories,
+                      deleteCategory: (s) {
+                        categories.remove(s);
+                        setState(() {});
+                      },
+                    )
                   : const Center(
                       child: Text("Create a category to get started!"),
                     )),
@@ -223,11 +226,13 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: const [
-                    Icon(FluentIcons.add),
                     Padding(
-                        padding: EdgeInsets.only(
-                            left: 10.0, top: 10.0, bottom: 10.0),
-                        child: Text("Create Category"))
+                        padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
+                        child: Text(
+                          "Create Category",
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.w500),
+                        ))
                   ],
                 )),
           )

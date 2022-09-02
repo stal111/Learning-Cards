@@ -72,7 +72,9 @@ class _ListEntryState extends State<CategoriesListEntry> {
                       borderRadius: BorderRadius.circular(6)),
                   duration: FluentTheme.of(context).fastAnimationDuration,
                   curve: FluentTheme.of(context).animationCurve,
-                  child: Text(widget.name),
+                  child: Text(widget.name,
+                      style:
+                          const TextStyle(fontSize: 20, fontWeight: FontWeight.w400)),
                 );
               },
             )),
