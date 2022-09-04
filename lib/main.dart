@@ -1,5 +1,6 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:learning_cards/categories_list.dart';
+import 'package:learning_cards/category.dart';
 
 import 'categories_list_entry.dart';
 
@@ -43,7 +44,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final inputController = TextEditingController();
-  List<String> categories = [];
+  List<Category> categories = [];
 
   void _incrementCounter() {
     setState(() {
@@ -62,14 +63,15 @@ class _MyHomePageState extends State<MyHomePage> {
     super.dispose();
   }
 
-  void _addCategory(String category) {
+  void _addCategory(Category category) {
     categories.add(category);
 
     setState(() {});
   }
 
   bool isValidCategory(String category) {
-    if (category.isEmpty || categories.contains(category)) {
+    if (category.isEmpty ||
+        categories.where((element) => element.name == category).isNotEmpty) {
       return false;
     }
 
@@ -104,10 +106,11 @@ class _MyHomePageState extends State<MyHomePage> {
                       ],
                     ),
                     onPressed: () {
-                      categories.sort((a, b) => a
+                      categories.sort((a, b) => a.name
                           .toString()
                           .toLowerCase()
-                          .compareTo(b.toString().toLowerCase()));
+                          .compareTo(b.name.toString().toLowerCase()));
+
                       setState(() {});
                     }),
                 Tooltip(
@@ -124,10 +127,9 @@ class _MyHomePageState extends State<MyHomePage> {
                         ],
                       ),
                       onPressed: () {
-                        categories.sort((a, b) => a
-                            .toString()
+                        categories.sort((a, b) => a.name
                             .toLowerCase()
-                            .compareTo(b.toString().toLowerCase()));
+                            .compareTo(b.name.toLowerCase()));
                         setState(() {});
                       }),
                 )
@@ -147,8 +149,71 @@ class _MyHomePageState extends State<MyHomePage> {
               child: categories.isNotEmpty
                   ? CategoriesList(
                       categories: categories,
+                      renameCategory: (s) {
+                        inputController.text = s;
+                        showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return ContentDialog(
+                                      title: const Text("Rename Category"),
+                                      content: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          const Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: Padding(
+                                                padding: EdgeInsets.only(
+                                                    bottom: 10.0),
+                                                child: Text(
+                                                    "Enter the new name of the category"),
+                                              )),
+                                          TextBox(
+                                              controller: inputController,
+                                              onChanged: (s) => {
+                                                    setState(() {}),
+                                                  },
+                                              padding: const EdgeInsets.only(
+                                                  top: 5.0, bottom: 10.0))
+                                        ],
+                                      ),
+                                      actions: [
+                                        Button(
+                                            child: const Text("Cancel"),
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            }),
+                                        ValueListenableBuilder(
+                                          valueListenable: inputController,
+                                          builder: (context, value, child) {
+                                            return FilledButton(
+                                              onPressed: isValidCategory(
+                                                      inputController.text)
+                                                  ? () {
+                                                      categories
+                                                              .firstWhere(
+                                                                  (element) =>
+                                                                      element
+                                                                          .name ==
+                                                                      s)
+                                                              .name =
+                                                          inputController.text;
+
+                                                      Navigator.pop(context);
+                                                    }
+                                                  : null,
+                                              child: const Text("Rename"),
+                                            );
+                                          },
+                                        )
+                                      ]);
+                                })
+                            .then((value) => setState(() {}));
+                      },
                       deleteCategory: (s) {
-                        categories.remove(s);
+                        categories.remove(categories
+                            .firstWhere((element) => element.name == s));
                         setState(() {});
                       },
                     )
@@ -211,7 +276,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                     onPressed: isValidCategory(
                                             inputController.text)
                                         ? () {
-                                            _addCategory(inputController.text);
+                                            _addCategory(
+                                                Category(inputController.text));
 
                                             Navigator.pop(context);
                                           }

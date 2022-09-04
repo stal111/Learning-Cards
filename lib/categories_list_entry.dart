@@ -7,11 +7,11 @@ typedef StringCallback = void Function(String);
 
 class CategoriesListEntry extends StatefulWidget {
   final String name;
+  final StringCallback renameCategory;
   final StringCallback deleteCategory;
-  bool expanded = false;
 
   CategoriesListEntry(
-      {Key? key, required this.name, required this.deleteCategory})
+      {Key? key, required this.name, required this.renameCategory, required this.deleteCategory})
       : super(key: key);
 
   @override
@@ -19,6 +19,8 @@ class CategoriesListEntry extends StatefulWidget {
 }
 
 class _ListEntryState extends State<CategoriesListEntry> {
+  bool expanded = false;
+
   @override
   Widget build(BuildContext context) {
     final theme = FluentTheme.of(context);
@@ -26,11 +28,11 @@ class _ListEntryState extends State<CategoriesListEntry> {
     return Row(
       children: [
         IconButton(
-            icon: widget.expanded
+            icon: expanded
                 ? const Icon(FluentIcons.chevron_down)
                 : const Icon(FluentIcons.chevron_right),
             onPressed: () {
-              widget.expanded = !widget.expanded;
+              expanded = !expanded;
               setState(() {});
             }),
         GestureDetector(
@@ -41,7 +43,16 @@ class _ListEntryState extends State<CategoriesListEntry> {
                             center: Offset.zero, width: 100, height: 100),
                         const Size(100, 100)),
                     items: [
-                      const material.PopupMenuItem(child: Text("Test")),
+                      material.PopupMenuItem(
+                          onTap: () {
+                             Future.delayed(Duration.zero, () => widget.renameCategory(widget.name));
+                            },
+                          child: Row(children: const [
+                            Icon(FluentIcons.rename),
+                            Padding(
+                                padding: EdgeInsets.only(left: 10.0),
+                                child: Text("Rename"))
+                          ])),
                       material.PopupMenuItem(
                         onTap: () {
                           widget.deleteCategory(widget.name);
@@ -73,12 +84,11 @@ class _ListEntryState extends State<CategoriesListEntry> {
                   duration: FluentTheme.of(context).fastAnimationDuration,
                   curve: FluentTheme.of(context).animationCurve,
                   child: Text(widget.name,
-                      style:
-                          const TextStyle(fontSize: 20, fontWeight: FontWeight.w400)),
+                      style: const TextStyle(
+                          fontSize: 20, fontWeight: FontWeight.w400)),
                 );
               },
             )),
-        IconButton(icon: const Icon(FluentIcons.rename), onPressed: () {}),
         IconButton(icon: const Icon(FluentIcons.add), onPressed: () {})
       ],
     );
