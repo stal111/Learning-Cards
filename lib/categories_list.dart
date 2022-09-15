@@ -23,7 +23,7 @@ class _ListState extends State<CategoriesList> {
       scrollDirection: Axis.vertical,
       padding: const EdgeInsets.all(10),
       children: List.generate(widget.categories.length,
-              (index) => CategoriesListEntry(name: widget.categories[index].name, renameCategory: widget.renameCategory, deleteCategory: widget.deleteCategory)),
+              (index) => CategoriesListEntry(category: widget.categories[index], renameCategory: widget.renameCategory, deleteCategory: widget.deleteCategory)),
     );
   }
 }

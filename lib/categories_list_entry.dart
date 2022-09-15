@@ -1,17 +1,24 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart' as material;
+import 'package:learning_cards/card_list.dart';
 import 'package:learning_cards/categories_list.dart';
 import 'package:learning_cards/main.dart';
+import 'package:learning_cards/category.dart';
 
 typedef StringCallback = void Function(String);
 
 class CategoriesListEntry extends StatefulWidget {
-  final String name;
+  final Category category;
   final StringCallback renameCategory;
   final StringCallback deleteCategory;
 
-  const CategoriesListEntry(
-      {Key? key, required this.name, required this.renameCategory, required this.deleteCategory})
+  final inputController = TextEditingController();
+
+  CategoriesListEntry(
+      {Key? key,
+      required this.category,
+      required this.renameCategory,
+      required this.deleteCategory})
       : super(key: key);
 
   @override
@@ -25,9 +32,16 @@ class _ListEntryState extends State<CategoriesListEntry> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = FluentTheme.of(context);
+    return Column(children: _createChildren());
+  }
 
-    return Row(
+  List<Widget> _createChildren() {
+    final theme = FluentTheme.of(context);
+    final name = widget.category.name;
+
+    List<Widget> list = [];
+
+    list.add(Row(
       children: [
         IconButton(
             icon: expanded
@@ -38,16 +52,18 @@ class _ListEntryState extends State<CategoriesListEntry> {
               setState(() {});
             }),
         GestureDetector(
-          onSecondaryTapDown: _storePosition,
-            onSecondaryTap: () =>  material.showMenu(
+            onSecondaryTapDown: _storePosition,
+            onSecondaryTap: () => material.showMenu(
                     context: context,
                     position: RelativeRect.fromRect(
-                        _tapPosition & const Size(100, 100), Offset.zero & const Size(1000, 1000)),
+                        _tapPosition & const Size(100, 100),
+                        Offset.zero & const Size(1000, 1000)),
                     items: [
                       material.PopupMenuItem(
                           onTap: () {
-                             Future.delayed(Duration.zero, () => widget.renameCategory(widget.name));
-                            },
+                            Future.delayed(Duration.zero,
+                                () => widget.renameCategory(name));
+                          },
                           child: Row(children: const [
                             Icon(FluentIcons.rename),
                             Padding(
@@ -56,7 +72,7 @@ class _ListEntryState extends State<CategoriesListEntry> {
                           ])),
                       material.PopupMenuItem(
                         onTap: () {
-                          widget.deleteCategory(widget.name);
+                          widget.deleteCategory(name);
                         },
                         child: Row(children: const [
                           Icon(FluentIcons.delete),
@@ -64,11 +80,24 @@ class _ListEntryState extends State<CategoriesListEntry> {
                               padding: EdgeInsets.only(left: 10.0),
                               child: Text("Delete"))
                         ]),
+                      ),
+                      material.PopupMenuItem(
+                        onTap: () {
+                          setState(() {
+                            widget.category.sortAlphabetically();
+                          });
+                        },
+                        child: Row(children: const [
+                          Icon(FluentIcons.sort),
+                          Padding(
+                              padding: EdgeInsets.only(left: 10.0),
+                              child: Text("Sort"))
+                        ]),
                       )
                     ]),
             child: HoverButton(
               onPressed: () {},
-              semanticLabel: widget.name,
+              semanticLabel: name,
               margin: const EdgeInsets.symmetric(
                 vertical: 4.0,
                 horizontal: 4.0,
@@ -84,15 +113,110 @@ class _ListEntryState extends State<CategoriesListEntry> {
                       borderRadius: BorderRadius.circular(6)),
                   duration: FluentTheme.of(context).fastAnimationDuration,
                   curve: FluentTheme.of(context).animationCurve,
-                  child: Text(widget.name,
+                  child: Text(name,
                       style: const TextStyle(
                           fontSize: 20, fontWeight: FontWeight.w400)),
                 );
               },
             )),
-        IconButton(icon: const Icon(FluentIcons.add), onPressed: () {})
+        IconButton(
+            icon: const Icon(FluentIcons.add),
+            onPressed: () {
+              setState(() {
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return ContentDialog(
+                          title: const Text("Create Card List"),
+                          content: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Padding(
+                                    padding: EdgeInsets.only(bottom: 10.0),
+                                    child:
+                                        Text("Enter the name of the card list"),
+                                  )),
+                              TextBox(
+                                  controller: widget.inputController,
+                                  onChanged: (s) => {
+                                        setState(() {}),
+                                      },
+                                  padding: const EdgeInsets.only(
+                                      top: 5.0, bottom: 10.0))
+                            ],
+                          ),
+                          actions: [
+                            Button(
+                                child: const Text("Cancel"),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                }),
+                            ValueListenableBuilder(
+                              valueListenable: widget.inputController,
+                              builder: (context, value, child) {
+                                return FilledButton(
+                                  onPressed:
+                                      isValidName(widget.inputController.text)
+                                          ? () {
+                                              setState(() {
+                                                widget.category.addCardList(
+                                                    CardList(widget
+                                                        .inputController.text));
+                                              });
+                                              ;
+
+                                              Navigator.pop(context);
+                                            }
+                                          : null,
+                                  child: const Text("Create"),
+                                );
+                              },
+                            )
+                          ]);
+                    });
+              });
+              ;
+            })
       ],
-    );
+    ));
+
+    if (widget.category.cardLists.isNotEmpty && expanded) {
+      for (var element in widget.category.cardLists) {
+        list.add(Row(children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 40.0),
+            child: Text(element.name, style: const TextStyle(fontSize: 16)),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 20.0),
+            child: Icon(FluentIcons.emoji2, color: Colors.green),
+          )
+        ]));
+      }
+    }
+
+    return list;
+  }
+
+  bool isValidName(String name) {
+    if (name.isEmpty) {
+      return false;
+    }
+
+    if (widget.category.cardLists.isEmpty) {
+      return true;
+    }
+
+    if (widget.category.cardLists
+        .where((element) => element.name == name)
+        .isNotEmpty) {
+      return false;
+    }
+
+    return true;
   }
 
   void _storePosition(TapDownDetails details) {

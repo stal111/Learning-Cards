@@ -221,16 +221,6 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: Text("Create a category to get started!"),
                     )),
 
-          // children: [
-          //   categories.isNotEmpty
-          //       ? TreeView(
-          //           items: List.generate(
-          //               categories.length,
-          //               (index) => TreeViewItem(
-          //                   content: Text(categories[index]))))
-          //       : const Text("Create a category to get started!"),
-          // ],
-
           Container(
             width: 500,
             padding: const EdgeInsets.all(20.0),
