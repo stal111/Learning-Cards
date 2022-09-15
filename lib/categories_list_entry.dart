@@ -10,7 +10,7 @@ class CategoriesListEntry extends StatefulWidget {
   final StringCallback renameCategory;
   final StringCallback deleteCategory;
 
-  CategoriesListEntry(
+  const CategoriesListEntry(
       {Key? key, required this.name, required this.renameCategory, required this.deleteCategory})
       : super(key: key);
 
@@ -20,6 +20,8 @@ class CategoriesListEntry extends StatefulWidget {
 
 class _ListEntryState extends State<CategoriesListEntry> {
   bool expanded = false;
+
+  var _tapPosition;
 
   @override
   Widget build(BuildContext context) {
@@ -36,12 +38,11 @@ class _ListEntryState extends State<CategoriesListEntry> {
               setState(() {});
             }),
         GestureDetector(
-            onSecondaryTap: () => material.showMenu(
+          onSecondaryTapDown: _storePosition,
+            onSecondaryTap: () =>  material.showMenu(
                     context: context,
-                    position: RelativeRect.fromSize(
-                        Rect.fromCenter(
-                            center: Offset.zero, width: 100, height: 100),
-                        const Size(100, 100)),
+                    position: RelativeRect.fromRect(
+                        _tapPosition & const Size(100, 100), Offset.zero & const Size(1000, 1000)),
                     items: [
                       material.PopupMenuItem(
                           onTap: () {
@@ -92,5 +93,9 @@ class _ListEntryState extends State<CategoriesListEntry> {
         IconButton(icon: const Icon(FluentIcons.add), onPressed: () {})
       ],
     );
+  }
+
+  void _storePosition(TapDownDetails details) {
+    _tapPosition = details.globalPosition;
   }
 }
