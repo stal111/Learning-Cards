@@ -111,8 +111,8 @@ class _ListEntryState extends State<CategoriesListEntry> {
                   decoration: BoxDecoration(
                       color: ButtonThemeData.uncheckedInputColor(theme, states),
                       borderRadius: BorderRadius.circular(6)),
-                  duration: FluentTheme.of(context).fastAnimationDuration,
-                  curve: FluentTheme.of(context).animationCurve,
+                  duration: theme.fastAnimationDuration,
+                  curve: theme.animationCurve,
                   child: Text(name,
                       style: const TextStyle(
                           fontSize: 20, fontWeight: FontWeight.w400)),
@@ -163,10 +163,11 @@ class _ListEntryState extends State<CategoriesListEntry> {
                                           ? () {
                                               setState(() {
                                                 widget.category.addCardList(
-                                                    CardList(widget
-                                                        .inputController.text));
+                                                    CardList(
+                                                        name: widget
+                                                            .inputController
+                                                            .text, status: Status.done));
                                               });
-                                              ;
 
                                               Navigator.pop(context);
                                             }
@@ -188,11 +189,40 @@ class _ListEntryState extends State<CategoriesListEntry> {
         list.add(Row(children: [
           Padding(
             padding: const EdgeInsets.only(left: 40.0),
-            child: Text(element.name, style: const TextStyle(fontSize: 16)),
+              child: HoverButton(
+                onPressed: () {
+                  widget.category.cardLists.forEach((element) {
+                    setState(() {
+                      element.cycleStatus();
+                    });
+                  });
+                },
+                semanticLabel: name,
+                margin: const EdgeInsets.symmetric(
+                  vertical: 4.0,
+                  horizontal: 4.0,
+                ),
+                builder: (context, states) {
+                  return AnimatedContainer(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 2.0,
+                      horizontal: 4.0,
+                    ),
+                    decoration: BoxDecoration(
+                        color: ButtonThemeData.uncheckedInputColor(theme, states),
+                        borderRadius: BorderRadius.circular(6)),
+                    duration: theme.fastAnimationDuration,
+                    curve: theme.animationCurve,
+                    child: Text(element.name,
+                        style: const TextStyle(
+                            fontSize: 16)),
+                  );
+                },
+              ),
           ),
           Padding(
             padding: const EdgeInsets.only(left: 20.0),
-            child: Icon(FluentIcons.emoji2, color: Colors.green),
+            child: Icon(element.status.icon, color: CardList.STATUS_TO_COLOR[element.status.index]),
           )
         ]));
       }

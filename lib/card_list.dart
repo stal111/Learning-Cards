@@ -2,20 +2,29 @@ import 'package:fluent_ui/fluent_ui.dart';
 
 class CardList {
   String name;
-  int status;
+  Status status;
 
-  CardList({required this.name, int? status}) : status = status ?? 0;
+  static final Map<int, AccentColor> STATUS_TO_COLOR = {0: Colors.green, 1: Colors.yellow, 2: Colors.red};
 
+  CardList({required this.name, required this.status});
+
+  void cycleStatus() {
+    int index  = status.index + 1;
+
+    if (index > Status.values.length) {
+      index = 0;
+    }
+
+    Status.values[index];
+  }
 }
 
 enum Status {
-  done(Icon(FluentIcons.emoji2)),
-  okay(Icon(FluentIcons.emoji_neutral)),
-  needsPractise(Icon(FluentIcons.emoji_disappointed));
+  done(FluentIcons.emoji2),
+  okay(FluentIcons.emoji_neutral),
+  needsPractise(FluentIcons.emoji_disappointed);
 
-  static final Map<Status, AccentColor> STATUS_TO_COLOR = Map();
-
-  final Icon icon;
+  final IconData icon;
 
   const Status(this.icon);
 }
