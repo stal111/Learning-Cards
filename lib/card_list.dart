@@ -4,18 +4,18 @@ class CardList {
   String name;
   Status status;
 
-  static final Map<int, AccentColor> STATUS_TO_COLOR = {0: Colors.green, 1: Colors.yellow, 2: Colors.red};
+  static final Map<int, AccentColor> statusToColor = {0: Colors.green, 1: Colors.grey.toAccentColor(), 2: Colors.red};
 
   CardList({required this.name, required this.status});
 
   void cycleStatus() {
     int index  = status.index + 1;
 
-    if (index > Status.values.length) {
+    if (index >= Status.values.length) {
       index = 0;
     }
 
-    Status.values[index];
+    status = Status.values[index];
   }
 }
 

@@ -191,10 +191,8 @@ class _ListEntryState extends State<CategoriesListEntry> {
             padding: const EdgeInsets.only(left: 40.0),
               child: HoverButton(
                 onPressed: () {
-                  widget.category.cardLists.forEach((element) {
-                    setState(() {
-                      element.cycleStatus();
-                    });
+                  setState(() {
+                    element.cycleStatus();
                   });
                 },
                 semanticLabel: name,
@@ -222,7 +220,7 @@ class _ListEntryState extends State<CategoriesListEntry> {
           ),
           Padding(
             padding: const EdgeInsets.only(left: 20.0),
-            child: Icon(element.status.icon, color: CardList.STATUS_TO_COLOR[element.status.index]),
+            child: Icon(element.status.icon, color: CardList.statusToColor[element.status.index]),
           )
         ]));
       }
