@@ -126,6 +126,8 @@ class _ListEntryState extends State<CategoriesListEntry> {
                 showDialog(
                     context: context,
                     builder: (context) {
+                      widget.inputController.clear();
+
                       return ContentDialog(
                           title: const Text("Create Card List"),
                           content: Column(
