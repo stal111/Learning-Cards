@@ -4,6 +4,7 @@ import 'package:learning_cards/card_list.dart';
 import 'package:learning_cards/categories_list.dart';
 import 'package:learning_cards/main.dart';
 import 'package:learning_cards/category.dart';
+import 'package:learning_cards/train_screen.dart';
 
 typedef StringCallback = void Function(String);
 
@@ -194,6 +195,7 @@ class _ListEntryState extends State<CategoriesListEntry> {
               child: HoverButton(
                 onPressed: () {
                   setState(() {
+                    Navigator.push(context, FluentPageRoute(builder: (context) => const TrainScreen()));
                     element.cycleStatus();
                   });
                 },
