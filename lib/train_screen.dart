@@ -24,6 +24,11 @@ class TrainScreenState extends State<TrainScreen>
 
   double _progress = 0.0;
 
+  List<String> currentQuestion = ["Welche Einheit hat die Spannung?", "Wie viel Akku hat das Windows Update verbraucht?", "Was ist im Jahr 800 passiert?", "Warst du heute produktiv?"];
+  List<String> currentAnswer = ["Die Einheit der Spannung ist Volt.", "Zu viel... :(", "Sag es mir!", "Wohl eher nicht"];
+
+  bool showBack = false;
+
   @override
   initState() {
     super.initState();
@@ -73,10 +78,31 @@ class TrainScreenState extends State<TrainScreen>
                 padding: const EdgeInsets.symmetric(vertical: 10.0),
                 child: material.LinearProgressIndicator(
                     value: _progress, minHeight: 20.0)),
-            Expanded(child: Text('$finishedCards/$cards       (${(_progress * 100).round()}%)', style: TextStyle(fontSize: 20),)),
-            FilledButton(
-                child: const Text("Back"),
-                onPressed: () => Navigator.pop(context)),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 10.0),
+              child: Text(
+                  '$finishedCards/$cards       (${(_progress * 100).round()}%)',
+                  style: const TextStyle(fontSize: 20)),
+            ),
+            Expanded(
+                child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: _createCards(),
+            )),
+            Padding(
+                padding: const EdgeInsets.only(top: 20.0),
+                child: FilledButton(
+                    onPressed: !showBack
+                        ? () => setState(() {
+                              showBack = true;
+                            })
+                        : null,
+                    child: Container(
+                      padding: const EdgeInsets.all(5.0),
+                      child: const Text("Show Back",
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.w500)),
+                    ))),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -104,7 +130,66 @@ class TrainScreenState extends State<TrainScreen>
 
   void finishCard() {
     finishedCards++;
+    showBack = false;
 
-    setState(() {_progress = finishedCards / cards;});
+    setState(() {
+      _progress = finishedCards / cards;
+    });
+  }
+
+  List<Widget> _createCards() {
+    List<Widget> list = [];
+
+    list.add(Expanded(
+        child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(bottom: 5.0, left: 30.0),
+          child: Text('Question ${finishedCards + 1}'),
+        ),
+        Container(
+            margin: const EdgeInsets.symmetric(horizontal: 20.0),
+            padding: const EdgeInsets.all(15.0),
+            decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(width: 3, color: Colors.blue),
+                borderRadius: BorderRadius.circular(10.0)),
+            child: Row(children: [Text(currentQuestion[finishedCards],
+                style: const TextStyle(
+                    fontSize: 20.0, fontWeight: FontWeight.w600))]))
+      ],
+    )));
+
+    list.add(Expanded(
+        child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(bottom: 5.0, left: 30.0),
+          child: Text('Answer ${finishedCards + 1}'),
+        ),
+        Container(
+            margin: const EdgeInsets.symmetric(horizontal: 20.0),
+            padding: const EdgeInsets.all(15.0),
+            decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(width: 3, color: showBack ? Colors.blue : Colors.grey.toAccentColor().lighter),
+                borderRadius: BorderRadius.circular(10.0)),
+            child: Row(
+              mainAxisAlignment:
+                  showBack ? MainAxisAlignment.start : MainAxisAlignment.center,
+              children: [
+                Text(showBack ? currentAnswer[finishedCards] : "?",
+                    style: const TextStyle(
+                        fontSize: 20.0, fontWeight: FontWeight.w600))
+              ],
+            ))
+      ],
+    )));
+
+    return list;
   }
 }
