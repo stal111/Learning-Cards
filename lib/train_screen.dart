@@ -27,8 +27,8 @@ class TrainScreenState extends State<TrainScreen>
 
   double _progress = 0.0;
 
-  List<String> currentQuestion = ["Welche Einheit hat die Spannung?", "Wie viel Akku hat das Windows Update verbraucht?", "Was ist im Jahr 800 passiert?", "Warst du heute produktiv?"];
-  List<String> currentAnswer = ["Die Einheit der Spannung ist Volt.", "Zu viel... :(", "Sag es mir!", "Wohl eher nicht"];
+  List<String> currentQuestion = ["Welche Einheit hat die Spannung?", "", "", "", "", "" "Wie viel Akku hat das Windows Update verbraucht?", "Was ist im Jahr 800 passiert?", "Warst du heute produktiv?"];
+  List<String> currentAnswer = ["Die Einheit der Spannung ist Volt.", "", "", "", "", "", "Zu viel... :(", "Sag es mir!", "Wohl eher nicht"];
 
   bool showBack = false;
 
@@ -65,6 +65,8 @@ class TrainScreenState extends State<TrainScreen>
             finishCard();
 
             if (_progress >= 1.0) {
+              widget.cardList.updateLastTrained();
+
               Navigator.pop(context);
             }
           })

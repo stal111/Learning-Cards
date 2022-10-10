@@ -3,6 +3,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 class CardList {
   String name;
   Status status;
+  DateTime? lastTrained;
 
   static final Map<int, AccentColor> statusToColor = {0: Colors.green, 1: Colors.grey.toAccentColor(), 2: Colors.red};
 
@@ -16,6 +17,10 @@ class CardList {
     }
 
     status = Status.values[index];
+  }
+
+  void updateLastTrained() {
+    lastTrained = DateTime.now();
   }
 }
 

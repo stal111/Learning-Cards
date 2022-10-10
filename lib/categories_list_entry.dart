@@ -225,7 +225,9 @@ class _ListEntryState extends State<CategoriesListEntry> {
           Padding(
             padding: const EdgeInsets.only(left: 20.0),
             child: Icon(element.status.icon, color: CardList.statusToColor[element.status.index]),
-          )
+          ),
+          Padding(padding: const EdgeInsets.only(left: 20.0),
+          child: element.lastTrained != null ? Text(element.lastTrained.toString()) : const Text("Not trained recently"),)
         ]));
       }
     }
