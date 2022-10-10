@@ -195,7 +195,7 @@ class _ListEntryState extends State<CategoriesListEntry> {
               child: HoverButton(
                 onPressed: () {
                   setState(() {
-                    Navigator.push(context, FluentPageRoute(builder: (context) => const TrainScreen()));
+                    Navigator.push(context, FluentPageRoute(builder: (context) => TrainScreen(cardList: element)));
                     element.cycleStatus();
                   });
                 },

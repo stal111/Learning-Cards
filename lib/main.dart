@@ -79,7 +79,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return NavigationView(
       appBar: NavigationAppBar(
-          title: const Text("Learning Cards"),
+          title: const Text("Learning Cards", style: TextStyle(fontWeight: FontWeight.w500)),
           actions: Container(
             padding: const EdgeInsets.all(10.0),
             child: Row(

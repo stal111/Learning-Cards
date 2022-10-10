@@ -7,7 +7,10 @@ import 'package:learning_cards/button/animated_button.dart';
 import 'package:learning_cards/card_list.dart';
 
 class TrainScreen extends StatefulWidget {
-  const TrainScreen({Key? key}) : super(key: key);
+
+  final CardList cardList;
+
+  const TrainScreen({Key? key, required this.cardList}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => TrainScreenState();
@@ -67,7 +70,9 @@ class TrainScreenState extends State<TrainScreen>
           })
         };
 
-    return Container(
+    return NavigationView(
+      appBar: NavigationAppBar(title: Text(widget.cardList.name, style: const TextStyle(fontWeight: FontWeight.w500)), actions: Container(),),
+      content: Container(
       child: Container(
         color: Colors.white,
         child: Center(
@@ -125,7 +130,7 @@ class TrainScreenState extends State<TrainScreen>
           ],
         )),
       ),
-    );
+    ));
   }
 
   void finishCard() {
