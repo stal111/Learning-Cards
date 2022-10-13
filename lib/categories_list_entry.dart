@@ -183,61 +183,56 @@ class _ListEntryState extends State<CategoriesListEntry> {
                           ]);
                     });
               });
-              ;
             })
       ],
     ));
 
     if (widget.category.cardLists.isNotEmpty && expanded) {
       for (var element in widget.category.cardLists) {
-        list.add(Table(children: [
-          TableRow(children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 40.0),
-              child: HoverButton(
-                onPressed: () {
-                  setState(() {
-                    Navigator.push(
-                        context,
-                        FluentPageRoute(
-                            builder: (context) =>
-                                TrainScreen(cardList: element)));
-                    element.cycleStatus();
-                  });
-                },
-                semanticLabel: name,
-                margin: const EdgeInsets.symmetric(
-                  vertical: 4.0,
-                  horizontal: 4.0,
+        list.add(Container(
+            margin: const EdgeInsets.all(4.0),
+            child: Table(children: [
+              TableRow(children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 40.0),
+                  child: HoverButton(
+                    onPressed: () {
+                      setState(() {
+                        Navigator.push(
+                            context,
+                            FluentPageRoute(
+                                builder: (context) =>
+                                    TrainScreen(cardList: element)));
+                        element.cycleStatus();
+                      });
+                    },
+                    semanticLabel: name,
+                    builder: (context, states) {
+                      return AnimatedContainer(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 2.0,
+                          horizontal: 4.0,
+                        ),
+                        decoration: BoxDecoration(
+                            color: ButtonThemeData.uncheckedInputColor(
+                                theme, states),
+                            borderRadius: BorderRadius.circular(6)),
+                        duration: theme.fastAnimationDuration,
+                        curve: theme.animationCurve,
+                        child: Text(element.name,
+                            style: const TextStyle(fontSize: 16)),
+                      );
+                    },
+                  ),
                 ),
-                builder: (context, states) {
-                  return AnimatedContainer(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 2.0,
-                      horizontal: 4.0,
-                    ),
-                    decoration: BoxDecoration(
-                        color:
-                            ButtonThemeData.uncheckedInputColor(theme, states),
-                        borderRadius: BorderRadius.circular(6)),
-                    duration: theme.fastAnimationDuration,
-                    curve: theme.animationCurve,
-                    child: Text(element.name,
-                        style: const TextStyle(fontSize: 16)),
-                  );
-                },
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 20.0),
-              child: Icon(element.status.icon,
-                  color: CardList.statusToColor[element.status.index]),
-            ),
-            Padding(
-                padding: const EdgeInsets.only(left: 20.0),
-                child: Text(element.getFormattedTime()))
-          ]),
-        ]));
+                Text("(${element.getCardsAmount()} Cards)"),
+                Icon(element.status.icon,
+                    color: CardList.statusToColor[element.status.index]),
+                Padding(
+                    padding: const EdgeInsets.only(left: 20.0),
+                    child: Text(element.getFormattedTime()))
+              ]),
+            ])));
       }
     }
 

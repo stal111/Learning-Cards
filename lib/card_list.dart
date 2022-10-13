@@ -1,10 +1,12 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:intl/intl.dart';
+import 'package:learning_cards/question.dart';
 
 class CardList {
   String name;
   Status status;
   DateTime? _lastTrained;
+  List<Question> questions = [];
 
   static final Map<int, AccentColor> statusToColor = {
     0: Colors.green,
@@ -13,6 +15,14 @@ class CardList {
   };
 
   CardList({required this.name, required this.status});
+
+  void addQuestion(String questionText, String answerText) {
+    questions.add(Question(questionText: questionText, answerText: answerText));
+  }
+
+  int getCardsAmount() {
+    return questions.length;
+  }
 
   void cycleStatus() {
     int index = status.index + 1;
