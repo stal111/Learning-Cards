@@ -169,7 +169,8 @@ class _ListEntryState extends State<CategoriesListEntry> {
                                                     CardList(
                                                         name: widget
                                                             .inputController
-                                                            .text, status: Status.done));
+                                                            .text,
+                                                        status: Status.done));
                                               });
 
                                               Navigator.pop(context);
@@ -189,13 +190,18 @@ class _ListEntryState extends State<CategoriesListEntry> {
 
     if (widget.category.cardLists.isNotEmpty && expanded) {
       for (var element in widget.category.cardLists) {
-        list.add(Row(children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 40.0),
+        list.add(Table(children: [
+          TableRow(children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 40.0),
               child: HoverButton(
                 onPressed: () {
                   setState(() {
-                    Navigator.push(context, FluentPageRoute(builder: (context) => TrainScreen(cardList: element)));
+                    Navigator.push(
+                        context,
+                        FluentPageRoute(
+                            builder: (context) =>
+                                TrainScreen(cardList: element)));
                     element.cycleStatus();
                   });
                 },
@@ -211,23 +217,26 @@ class _ListEntryState extends State<CategoriesListEntry> {
                       horizontal: 4.0,
                     ),
                     decoration: BoxDecoration(
-                        color: ButtonThemeData.uncheckedInputColor(theme, states),
+                        color:
+                            ButtonThemeData.uncheckedInputColor(theme, states),
                         borderRadius: BorderRadius.circular(6)),
                     duration: theme.fastAnimationDuration,
                     curve: theme.animationCurve,
                     child: Text(element.name,
-                        style: const TextStyle(
-                            fontSize: 16)),
+                        style: const TextStyle(fontSize: 16)),
                   );
                 },
               ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 20.0),
-            child: Icon(element.status.icon, color: CardList.statusToColor[element.status.index]),
-          ),
-          Padding(padding: const EdgeInsets.only(left: 20.0),
-          child: element.lastTrained != null ? Text(element.lastTrained.toString()) : const Text("Not trained recently"),)
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 20.0),
+              child: Icon(element.status.icon,
+                  color: CardList.statusToColor[element.status.index]),
+            ),
+            Padding(
+                padding: const EdgeInsets.only(left: 20.0),
+                child: Text(element.getFormattedTime()))
+          ]),
         ]));
       }
     }
