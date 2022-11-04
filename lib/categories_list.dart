@@ -8,8 +8,9 @@ class CategoriesList extends StatefulWidget {
   final List<Category> categories;
   final StringCallback renameCategory;
   final StringCallback deleteCategory;
+  final VoidCallback updateMain;
 
-  const CategoriesList({Key? key, required this.categories, required this.renameCategory, required this.deleteCategory}) : super(key: key);
+  const CategoriesList({Key? key, required this.categories, required this.renameCategory, required this.deleteCategory, required this.updateMain}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _ListState();
@@ -23,7 +24,7 @@ class _ListState extends State<CategoriesList> {
       scrollDirection: Axis.vertical,
       padding: const EdgeInsets.all(10),
       children: List.generate(widget.categories.length,
-              (index) => CategoriesListEntry(category: widget.categories[index], renameCategory: widget.renameCategory, deleteCategory: widget.deleteCategory)),
+              (index) => CategoriesListEntry(category: widget.categories[index], renameCategory: widget.renameCategory, deleteCategory: widget.deleteCategory, updateMain: widget.updateMain)),
     );
   }
 }

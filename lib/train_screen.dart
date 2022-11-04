@@ -22,19 +22,19 @@ class TrainScreenState extends State<TrainScreen>
   late AnimationController _controller2;
   late AnimationController _controller3;
 
-  int cards = 7;
+  late int cards;
   int finishedCards = 0;
 
   double _progress = 0.0;
 
-  List<String> currentQuestion = ["Welche Einheit hat die Spannung?", "", "", "", "", "" "Wie viel Akku hat das Windows Update verbraucht?", "Was ist im Jahr 800 passiert?", "Warst du heute produktiv?"];
-  List<String> currentAnswer = ["Die Einheit der Spannung ist Volt.", "", "", "", "", "", "Zu viel... :(", "Sag es mir!", "Wohl eher nicht"];
-
   bool showBack = false;
+  bool finished = false;
 
   @override
   initState() {
     super.initState();
+
+    cards = widget.cardList.questions.length;
 
     _controller1 = AnimationController(
         duration: const Duration(milliseconds: 100), vsync: this);
@@ -65,6 +65,8 @@ class TrainScreenState extends State<TrainScreen>
             finishCard();
 
             if (_progress >= 1.0) {
+              finished = true;
+
               widget.cardList.updateLastTrained();
 
               Navigator.pop(context);
@@ -163,7 +165,7 @@ class TrainScreenState extends State<TrainScreen>
                 color: Colors.white,
                 border: Border.all(width: 3, color: Colors.blue),
                 borderRadius: BorderRadius.circular(10.0)),
-            child: Row(children: [Text(currentQuestion[finishedCards],
+            child: Row(children: [Text(finished ? "" : widget.cardList.questions[finishedCards].questionText,
                 style: const TextStyle(
                     fontSize: 20.0, fontWeight: FontWeight.w600))]))
       ],
@@ -189,7 +191,7 @@ class TrainScreenState extends State<TrainScreen>
               mainAxisAlignment:
                   showBack ? MainAxisAlignment.start : MainAxisAlignment.center,
               children: [
-                Text(showBack ? currentAnswer[finishedCards] : "?",
+                Text(showBack && !finished ? widget.cardList.questions[finishedCards].answerText : "?",
                     style: const TextStyle(
                         fontSize: 20.0, fontWeight: FontWeight.w600))
               ],

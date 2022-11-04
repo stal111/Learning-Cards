@@ -12,6 +12,7 @@ class CategoriesListEntry extends StatefulWidget {
   final Category category;
   final StringCallback renameCategory;
   final StringCallback deleteCategory;
+  final VoidCallback updateMain;
 
   final inputController = TextEditingController();
 
@@ -19,7 +20,8 @@ class CategoriesListEntry extends StatefulWidget {
       {Key? key,
       required this.category,
       required this.renameCategory,
-      required this.deleteCategory})
+      required this.deleteCategory,
+      required this.updateMain})
       : super(key: key);
 
   @override
@@ -173,6 +175,7 @@ class _ListEntryState extends State<CategoriesListEntry> {
                                                         status: Status.done));
                                               });
 
+                                              widget.updateMain();
                                               Navigator.pop(context);
                                             }
                                           : null,
@@ -197,14 +200,16 @@ class _ListEntryState extends State<CategoriesListEntry> {
                   padding: const EdgeInsets.only(left: 40.0),
                   child: HoverButton(
                     onPressed: () {
-                      setState(() {
-                        Navigator.push(
-                            context,
-                            FluentPageRoute(
-                                builder: (context) =>
-                                    TrainScreen(cardList: element)));
-                        element.cycleStatus();
-                      });
+                      if (element.questions.isNotEmpty) {
+                        setState(() {
+                          Navigator.push(
+                              context,
+                              FluentPageRoute(
+                                  builder: (context) =>
+                                      TrainScreen(cardList: element)));
+                          element.cycleStatus();
+                        });
+                      }
                     },
                     semanticLabel: name,
                     builder: (context, states) {
