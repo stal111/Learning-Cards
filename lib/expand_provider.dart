@@ -3,7 +3,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 
 import 'category.dart';
 
-class ExpandProvider extends ChangeNotifier {
+class ExpandProvider with ChangeNotifier {
   Map<Category, bool> map = {};
 
   void expandAll() {

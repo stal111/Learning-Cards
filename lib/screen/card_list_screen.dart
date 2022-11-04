@@ -16,20 +16,21 @@ class CardListScreen extends StatefulWidget {
   }
 }
 
-class CardListScreenState extends State<CardListScreen> with ChangeNotifier {
+class CardListScreenState extends State<CardListScreen> {
   final inputController = TextEditingController();
   final questionController = TextEditingController();
   final answerController = TextEditingController();
 
   List<Category> categories = [];
 
+
   @override
   void dispose() {
+    super.dispose();
+
     inputController.dispose();
     questionController.dispose();
     answerController.dispose();
-
-    super.dispose();
   }
 
   @override

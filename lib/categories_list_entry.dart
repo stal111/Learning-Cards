@@ -33,21 +33,21 @@ class CategoriesListEntry extends StatefulWidget {
   State<StatefulWidget> createState() => ListEntryState();
 }
 
-class ListEntryState extends State<CategoriesListEntry> with ChangeNotifier {
+class ListEntryState extends State<CategoriesListEntry> {
   var _tapPosition;
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ExpandProvider>(
-        builder: (context, value, child) =>
-            Column(children: _createChildren(value)));
+    final provider = Provider.of<ExpandProvider>(context);
+
+    return Column(children: _createChildren(provider));
   }
 
-  List<Widget> _createChildren(final ExpandProvider expandProvider) {
+  List<Widget> _createChildren(final ExpandProvider provider) {
     final theme = FluentTheme.of(context);
     final name = widget.category.name;
 
-    bool expanded = expandProvider.map[widget.category] ?? false;
+    bool expanded = provider.map[widget.category] ?? false;
 
     List<Widget> list = [];
 
@@ -60,8 +60,8 @@ class ListEntryState extends State<CategoriesListEntry> with ChangeNotifier {
             onPressed: () {
               setState(() {
                 expanded
-                    ? expandProvider.collapse(widget.category)
-                    : expandProvider.expand(widget.category);
+                    ? provider.collapse(widget.category)
+                    : provider.expand(widget.category);
               });
             }),
         GestureDetector(

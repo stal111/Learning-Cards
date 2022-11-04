@@ -1,4 +1,5 @@
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter_acrylic/flutter_acrylic.dart';
 import 'package:learning_cards/button/window_buttons.dart';
 import 'package:learning_cards/card_list.dart';
 import 'package:learning_cards/categories_list.dart';
@@ -7,6 +8,7 @@ import 'package:learning_cards/multi_value_listenable_builder.dart';
 import 'package:learning_cards/screen/card_list_screen.dart';
 import 'package:learning_cards/screen/home_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:system_theme/system_theme.dart';
 import 'package:window_manager/window_manager.dart';
 
 import 'app_theme.dart';
@@ -14,6 +16,10 @@ import 'categories_list_entry.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  SystemTheme.accentColor.load();
+
+  await Window.initialize();
 
   await WindowManager.instance.ensureInitialized();
 
@@ -36,19 +42,51 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(create: (_) => AppTheme(), builder: (context, _) {
+    return ChangeNotifierProvider(key: GlobalKey(), create: (_) => AppTheme(), builder: (context, _) {
       final appTheme = context.watch<AppTheme>();
 
-      return const FluentApp(
-      title: 'Flutter Demo',
+      return FluentApp(
+      title: 'Learning Cards',
+      themeMode: appTheme.mode,
       debugShowCheckedModeBanner: false,
-      home: MyHomePage(title: 'Flutter Demo Home Page'));
+      color: appTheme.color,
+          darkTheme: ThemeData(
+            brightness: Brightness.dark,
+            accentColor: appTheme.color,
+            visualDensity: VisualDensity.standard,
+            focusTheme: FocusThemeData(
+              glowFactor: is10footScreen() ? 2.0 : 0.0,
+            ),
+          ),
+          theme: ThemeData(
+            accentColor: appTheme.color,
+            visualDensity: VisualDensity.standard,
+            focusTheme: FocusThemeData(
+              glowFactor: is10footScreen() ? 2.0 : 0.0,
+            ),
+          ),
+      locale: appTheme.locale,
+      builder: (context, child) {
+        return Directionality(
+          textDirection: appTheme.textDirection,
+          child: NavigationPaneTheme(
+            data: NavigationPaneThemeData(
+              backgroundColor: appTheme.windowEffect !=
+                  WindowEffect.disabled
+                  ? Colors.transparent
+                  : null,
+            ),
+            child: child!,
+          ),
+        );
+      },
+      home: const MainScreen());
     });
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
+class MainScreen extends StatefulWidget {
+  const MainScreen({Key? key}) : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -59,15 +97,25 @@ class MyHomePage extends StatefulWidget {
   // used by the build method of the State. Fields in a Widget subclass are
   // always marked "final".
 
-  final String title;
-
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<MainScreen> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MainScreen> with WindowListener {
 
   int index = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    windowManager.addListener(this);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    windowManager.removeListener(this);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +129,6 @@ class _MyHomePageState extends State<MyHomePage> {
               children: const [
                 WindowButtons()
               ],
-              //children: _createTopButtons(),
             ),
           )),
       pane: NavigationPane(displayMode: PaneDisplayMode.auto, selected: index, onChanged: (index) {
@@ -94,5 +141,11 @@ class _MyHomePageState extends State<MyHomePage> {
             icon: const Icon(FluentIcons.list), title: const Text("Card Lists"), body: const CardListScreen())
       ])
     );
+  }
+
+  @override
+  void onWindowClose() {
+    super.onWindowClose();
+    windowManager.destroy();
   }
 }
