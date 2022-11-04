@@ -4,9 +4,14 @@ import 'package:learning_cards/card_list.dart';
 import 'package:learning_cards/categories_list.dart';
 import 'package:learning_cards/main.dart';
 import 'package:learning_cards/category.dart';
+import 'package:learning_cards/screen/card_list_screen.dart';
 import 'package:learning_cards/train_screen.dart';
+import 'package:provider/provider.dart';
+
+import 'expand_provider.dart';
 
 typedef StringCallback = void Function(String);
+typedef CardListCallback = void Function(CardListScreen);
 
 class CategoriesListEntry extends StatefulWidget {
   final Category category;
@@ -25,22 +30,24 @@ class CategoriesListEntry extends StatefulWidget {
       : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _ListEntryState();
+  State<StatefulWidget> createState() => ListEntryState();
 }
 
-class _ListEntryState extends State<CategoriesListEntry> {
-  bool expanded = false;
-
+class ListEntryState extends State<CategoriesListEntry> with ChangeNotifier {
   var _tapPosition;
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: _createChildren());
+    return Consumer<ExpandProvider>(
+        builder: (context, value, child) =>
+            Column(children: _createChildren(value)));
   }
 
-  List<Widget> _createChildren() {
+  List<Widget> _createChildren(final ExpandProvider expandProvider) {
     final theme = FluentTheme.of(context);
     final name = widget.category.name;
+
+    bool expanded = expandProvider.map[widget.category] ?? false;
 
     List<Widget> list = [];
 
@@ -51,8 +58,11 @@ class _ListEntryState extends State<CategoriesListEntry> {
                 ? const Icon(FluentIcons.chevron_down)
                 : const Icon(FluentIcons.chevron_right),
             onPressed: () {
-              expanded = !expanded;
-              setState(() {});
+              setState(() {
+                expanded
+                    ? expandProvider.collapse(widget.category)
+                    : expandProvider.expand(widget.category);
+              });
             }),
         GestureDetector(
             onSecondaryTapDown: _storePosition,
