@@ -5,6 +5,9 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart' as material;
 import 'package:learning_cards/button/animated_button.dart';
 import 'package:learning_cards/card_list.dart';
+import 'package:provider/provider.dart';
+
+import 'app_theme.dart';
 
 class TrainScreen extends StatefulWidget {
 
@@ -60,6 +63,8 @@ class TrainScreenState extends State<TrainScreen>
 
   @override
   Widget build(BuildContext context) {
+    final appTheme = context.watch<AppTheme>();
+
     callback(status) => {
           setState(() {
             finishCard();
@@ -78,7 +83,6 @@ class TrainScreenState extends State<TrainScreen>
       appBar: NavigationAppBar(title: Text(widget.cardList.name, style: const TextStyle(fontWeight: FontWeight.w500)), actions: Container(),),
       content: Container(
       child: Container(
-        color: Colors.white,
         child: Center(
             child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -147,6 +151,8 @@ class TrainScreenState extends State<TrainScreen>
   }
 
   List<Widget> _createCards() {
+    final appTheme = context.watch<AppTheme>();
+
     List<Widget> list = [];
 
     list.add(Expanded(
@@ -162,7 +168,7 @@ class TrainScreenState extends State<TrainScreen>
             margin: const EdgeInsets.symmetric(horizontal: 20.0),
             padding: const EdgeInsets.all(15.0),
             decoration: BoxDecoration(
-                color: Colors.white,
+                color: FluentTheme.of(context).acrylicBackgroundColor,
                 border: Border.all(width: 3, color: Colors.blue),
                 borderRadius: BorderRadius.circular(10.0)),
             child: Row(children: [Text(finished ? "" : widget.cardList.questions[finishedCards].questionText,
@@ -184,7 +190,7 @@ class TrainScreenState extends State<TrainScreen>
             margin: const EdgeInsets.symmetric(horizontal: 20.0),
             padding: const EdgeInsets.all(15.0),
             decoration: BoxDecoration(
-                color: Colors.white,
+                color: FluentTheme.of(context).acrylicBackgroundColor,
                 border: Border.all(width: 3, color: showBack ? Colors.blue : Colors.grey.toAccentColor().lighter),
                 borderRadius: BorderRadius.circular(10.0)),
             child: Row(

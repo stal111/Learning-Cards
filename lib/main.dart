@@ -24,7 +24,8 @@ void main() async {
   await WindowManager.instance.ensureInitialized();
 
   WindowManager.instance.waitUntilReadyToShow().then((value) async {
-    await WindowManager.instance.setTitleBarStyle(TitleBarStyle.hidden, windowButtonVisibility: false);
+    await WindowManager.instance
+        .setTitleBarStyle(TitleBarStyle.hidden, windowButtonVisibility: false);
   });
 
   await windowManager.setMinimumSize(const Size(600, 600));
@@ -42,46 +43,49 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(key: GlobalKey(), create: (_) => AppTheme(), builder: (context, _) {
-      final appTheme = context.watch<AppTheme>();
+    return ChangeNotifierProvider(
+        key: GlobalKey(),
+        create: (_) => AppTheme(),
+        builder: (context, _) {
+          final appTheme = context.watch<AppTheme>();
 
-      return FluentApp(
-      title: 'Learning Cards',
-      themeMode: appTheme.mode,
-      debugShowCheckedModeBanner: false,
-      color: appTheme.color,
-          darkTheme: ThemeData(
-            brightness: Brightness.dark,
-            accentColor: appTheme.color,
-            visualDensity: VisualDensity.standard,
-            focusTheme: FocusThemeData(
-              glowFactor: is10footScreen() ? 2.0 : 0.0,
-            ),
-          ),
-          theme: ThemeData(
-            accentColor: appTheme.color,
-            visualDensity: VisualDensity.standard,
-            focusTheme: FocusThemeData(
-              glowFactor: is10footScreen() ? 2.0 : 0.0,
-            ),
-          ),
-      locale: appTheme.locale,
-      builder: (context, child) {
-        return Directionality(
-          textDirection: appTheme.textDirection,
-          child: NavigationPaneTheme(
-            data: NavigationPaneThemeData(
-              backgroundColor: appTheme.windowEffect !=
-                  WindowEffect.disabled
-                  ? Colors.transparent
-                  : null,
-            ),
-            child: child!,
-          ),
-        );
-      },
-      home: const MainScreen());
-    });
+          return FluentApp(
+              title: 'Learning Cards',
+              themeMode: appTheme.mode,
+              debugShowCheckedModeBanner: false,
+              color: appTheme.color,
+              darkTheme: ThemeData(
+                brightness: Brightness.dark,
+                accentColor: appTheme.color,
+                visualDensity: VisualDensity.standard,
+                focusTheme: FocusThemeData(
+                  glowFactor: is10footScreen() ? 2.0 : 0.0,
+                ),
+              ),
+              theme: ThemeData(
+                accentColor: appTheme.color,
+                visualDensity: VisualDensity.standard,
+                focusTheme: FocusThemeData(
+                  glowFactor: is10footScreen() ? 2.0 : 0.0,
+                ),
+              ),
+              locale: appTheme.locale,
+              builder: (context, child) {
+                return Directionality(
+                  textDirection: appTheme.textDirection,
+                  child: NavigationPaneTheme(
+                    data: NavigationPaneThemeData(
+                      backgroundColor:
+                          appTheme.windowEffect != WindowEffect.disabled
+                              ? Colors.transparent
+                              : null,
+                    ),
+                    child: child!,
+                  ),
+                );
+              },
+              home: const MainScreen());
+        });
   }
 }
 
@@ -102,7 +106,6 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MainScreen> with WindowListener {
-
   int index = 0;
 
   @override
@@ -119,28 +122,54 @@ class _MyHomePageState extends State<MainScreen> with WindowListener {
 
   @override
   Widget build(BuildContext context) {
+    final appTheme = context.watch<AppTheme>();
+
     return NavigationView(
-      appBar: NavigationAppBar(
-          title: const DragToMoveArea(child: Align(alignment: AlignmentDirectional.center, child: Text("Learning Cards", style: TextStyle(fontWeight: FontWeight.w500)))),
-          actions: Container(
-            padding: const EdgeInsets.all(10.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: const [
-                WindowButtons()
-              ],
-            ),
-          )),
-      pane: NavigationPane(displayMode: PaneDisplayMode.auto, selected: index, onChanged: (index) {
-        setState(() {
-          this.index = index;
-        });
-      }, items: [
-        PaneItem(icon: const Icon(FluentIcons.home), title: const Text("Home"), body: const HomeScreen()),
-        PaneItem(
-            icon: const Icon(FluentIcons.list), title: const Text("Card Lists"), body: const CardListScreen())
-      ])
-    );
+        appBar: NavigationAppBar(
+            title: const DragToMoveArea(
+                child: Align(
+                    alignment: AlignmentDirectional.center,
+                    child: Text("Learning Cards",
+                        style: TextStyle(fontWeight: FontWeight.w500)))),
+            actions: Container(
+              padding: const EdgeInsets.all(10.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Padding(
+                      padding: const EdgeInsetsDirectional.only(end: 8.0),
+                      child: ToggleSwitch(
+                          content: const Text('Dark Mode'),
+                          checked: FluentTheme.of(context).brightness.isDark,
+                          onChanged: (v) {
+                            if (v) {
+                              appTheme.mode = ThemeMode.dark;
+                            } else {
+                              appTheme.mode = ThemeMode.light;
+                            }
+                          })),
+                  const WindowButtons()
+                ],
+              ),
+            )),
+        pane: NavigationPane(
+            displayMode: PaneDisplayMode.auto,
+            selected: index,
+            onChanged: (index) {
+              setState(() {
+                this.index = index;
+              });
+            },
+            items: [
+              PaneItem(
+                  icon: const Icon(FluentIcons.home),
+                  title: const Text("Home"),
+                  body: const HomeScreen()),
+              PaneItem(
+                  icon: const Icon(FluentIcons.list),
+                  title: const Text("Card Lists"),
+                  body: const CardListScreen())
+            ]));
   }
 
   @override
