@@ -122,7 +122,7 @@ class ListEntryState extends State<CategoriesListEntry> with ChangeNotifier {
                     horizontal: 4.0,
                   ),
                   decoration: BoxDecoration(
-                      color: ButtonThemeData.uncheckedInputColor(theme, states),
+                      color: ButtonThemeData.uncheckedInputColor(theme, states, transparentWhenNone: true),
                       borderRadius: BorderRadius.circular(6)),
                   duration: theme.fastAnimationDuration,
                   curve: theme.animationCurve,
@@ -230,7 +230,7 @@ class ListEntryState extends State<CategoriesListEntry> with ChangeNotifier {
                         ),
                         decoration: BoxDecoration(
                             color: ButtonThemeData.uncheckedInputColor(
-                                theme, states),
+                                theme, states, transparentWhenNone: true),
                             borderRadius: BorderRadius.circular(6)),
                         duration: theme.fastAnimationDuration,
                         curve: theme.animationCurve,
