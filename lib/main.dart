@@ -8,6 +8,7 @@ import 'package:learning_cards/multi_value_listenable_builder.dart';
 import 'package:learning_cards/screen/card_list_screen.dart';
 import 'package:learning_cards/screen/home_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:system_theme/system_theme.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -44,47 +45,51 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-        key: GlobalKey(),
         create: (_) => AppTheme(),
         builder: (context, _) {
           final appTheme = context.watch<AppTheme>();
 
-          return FluentApp(
-              title: 'Learning Cards',
-              themeMode: appTheme.mode,
-              debugShowCheckedModeBanner: false,
-              color: appTheme.color,
-              darkTheme: ThemeData(
-                brightness: Brightness.dark,
-                accentColor: appTheme.color,
-                visualDensity: VisualDensity.standard,
-                focusTheme: FocusThemeData(
-                  glowFactor: is10footScreen() ? 2.0 : 0.0,
-                ),
-              ),
-              theme: ThemeData(
-                accentColor: appTheme.color,
-                visualDensity: VisualDensity.standard,
-                focusTheme: FocusThemeData(
-                  glowFactor: is10footScreen() ? 2.0 : 0.0,
-                ),
-              ),
-              locale: appTheme.locale,
-              builder: (context, child) {
-                return Directionality(
-                  textDirection: appTheme.textDirection,
-                  child: NavigationPaneTheme(
-                    data: NavigationPaneThemeData(
-                      backgroundColor:
-                          appTheme.windowEffect != WindowEffect.disabled
-                              ? Colors.transparent
-                              : null,
+          return FutureBuilder(
+              builder: (context, snapshot) {
+                return FluentApp(
+                    title: 'Learning Cards',
+                    themeMode: snapshot.data as ThemeMode,
+                    debugShowCheckedModeBanner: false,
+                    color: appTheme.color,
+                    darkTheme: ThemeData(
+                      brightness: Brightness.dark,
+                      accentColor: appTheme.color,
+                      visualDensity: VisualDensity.standard,
+                      focusTheme: FocusThemeData(
+                        glowFactor: is10footScreen() ? 2.0 : 0.0,
+                      ),
                     ),
-                    child: child!,
-                  ),
-                );
+                    theme: ThemeData(
+                      accentColor: appTheme.color,
+                      visualDensity: VisualDensity.standard,
+                      focusTheme: FocusThemeData(
+                        glowFactor: is10footScreen() ? 2.0 : 0.0,
+                      ),
+                    ),
+                    locale: appTheme.locale,
+                    builder: (context, child) {
+                      return Directionality(
+                        textDirection: appTheme.textDirection,
+                        child: NavigationPaneTheme(
+                          data: NavigationPaneThemeData(
+                            backgroundColor:
+                                appTheme.windowEffect != WindowEffect.disabled
+                                    ? Colors.transparent
+                                    : null,
+                          ),
+                          child: child!,
+                        ),
+                      );
+                    },
+                    home: const MainScreen());
               },
-              home: const MainScreen());
+              future: appTheme.getThemeMode(),
+              initialData: ThemeMode.system);
         });
   }
 }
