@@ -1,4 +1,5 @@
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:learning_cards/categories_provider.dart';
 import 'package:learning_cards/expand_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -21,9 +22,6 @@ class CardListScreenState extends State<CardListScreen> {
   final questionController = TextEditingController();
   final answerController = TextEditingController();
 
-  List<Category> categories = [];
-
-
   @override
   void dispose() {
     super.dispose();
@@ -35,108 +33,154 @@ class CardListScreenState extends State<CardListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(create: (context) => ExpandProvider(), builder: (context, child) => Container(
-      child: Consumer<ExpandProvider>(builder: (context, value, child) => Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-        Padding(padding: const EdgeInsets.all(10.0), child: CommandBar(primaryItems: _buildCommandBar(value), mainAxisAlignment: MainAxisAlignment.start)),
-        Expanded(
-            child: _buildCategoriesList(value) ?? const Center(
-                    child: Text("Create a category to get started!"),
-                  )),
-        Container(
-          width: 500,
-          padding: const EdgeInsets.all(20.0),
-          child: FilledButton(
-              onPressed: () {
-                inputController.clear();
+    return MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (context) => ExpandProvider()),
+          ChangeNotifierProvider(create: (context) => CategoriesProvider())
+        ],
+        builder: (context, child) {
+          final categories = context.watch<CategoriesProvider>();
 
-                showDialog(
-                    context: context,
-                    builder: (context) {
-                      return ContentDialog(
-                          title: const Text("Create Category"),
-                          content: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Padding(
-                                    padding: EdgeInsets.only(bottom: 10.0),
-                                    child:
-                                        Text("Enter the name of the category"),
-                                  )),
-                              TextBox(
-                                  controller: inputController,
-                                  onChanged: (s) => {
-                                        setState(() {}),
-                                      },
-                                  padding: const EdgeInsets.only(
-                                      top: 5.0, bottom: 10.0))
-                            ],
-                          ),
-                          actions: [
-                            Button(
-                                child: const Text("Cancel"),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                }),
-                            ValueListenableBuilder(
-                              valueListenable: inputController,
-                              builder: (context, value, child) {
-                                return FilledButton(
-                                  onPressed: isValidCategory(
-                                          inputController.text)
-                                      ? () {
-                                          _addCategory(
-                                              Category(inputController.text));
+          return FutureBuilder(
+              builder: (context, snapshot) {
+                return Container(
+                    child: Consumer<ExpandProvider>(
+                        builder:
+                            (context, value, child) => Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Padding(
+                                          padding: const EdgeInsets.all(10.0),
+                                          child: CommandBar(
+                                              primaryItems: _buildCommandBar(
+                                                  categories, value),
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start)),
+                                      Expanded(
+                                          child: _buildCategoriesList(
+                                                  categories, value) ??
+                                              const Center(
+                                                child: Text(
+                                                    "Create a category to get started!"),
+                                              )),
+                                      Container(
+                                        width: 500,
+                                        padding: const EdgeInsets.all(20.0),
+                                        child: FilledButton(
+                                            onPressed: () {
+                                              inputController.clear();
 
-                                          Navigator.pop(context);
-                                        }
-                                      : null,
-                                  child: const Text("Create"),
-                                );
-                              },
-                            )
-                          ]);
-                    });
+                                              showDialog(
+                                                  context: context,
+                                                  builder: (context) {
+                                                    return ContentDialog(
+                                                        title: const Text(
+                                                            "Create Category"),
+                                                        content: Column(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .start,
+                                                          mainAxisSize:
+                                                              MainAxisSize.min,
+                                                          children: [
+                                                            const Align(
+                                                                alignment: Alignment
+                                                                    .centerLeft,
+                                                                child: Padding(
+                                                                  padding: EdgeInsets
+                                                                      .only(
+                                                                          bottom:
+                                                                              10.0),
+                                                                  child: Text(
+                                                                      "Enter the name of the category"),
+                                                                )),
+                                                            TextBox(
+                                                                controller:
+                                                                    inputController,
+                                                                onChanged:
+                                                                    (s) => {},
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .only(
+                                                                        top:
+                                                                            5.0,
+                                                                        bottom:
+                                                                            10.0))
+                                                          ],
+                                                        ),
+                                                        actions: [
+                                                          Button(
+                                                              child: const Text(
+                                                                  "Cancel"),
+                                                              onPressed: () {
+                                                                Navigator.pop(
+                                                                    context);
+                                                              }),
+                                                          ValueListenableBuilder(
+                                                            valueListenable:
+                                                                inputController,
+                                                            builder: (context,
+                                                                value, child) {
+                                                              return FilledButton(
+                                                                onPressed: isValidCategory(
+                                                                        categories,
+                                                                        inputController
+                                                                            .text)
+                                                                    ? () {
+                                                                        categories
+                                                                            .addCategory(Category(inputController.text));
+
+                                                                        Navigator.pop(
+                                                                            context);
+                                                                      }
+                                                                    : null,
+                                                                child: const Text(
+                                                                    "Create"),
+                                                              );
+                                                            },
+                                                          )
+                                                        ]);
+                                                  });
+                                            },
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: const [
+                                                Padding(
+                                                    padding: EdgeInsets.only(
+                                                        top: 10.0,
+                                                        bottom: 10.0),
+                                                    child: Text(
+                                                      "Create Category",
+                                                      style: TextStyle(
+                                                          fontSize: 20,
+                                                          fontWeight:
+                                                              FontWeight.w500),
+                                                    ))
+                                              ],
+                                            )),
+                                      )
+                                    ])));
               },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Padding(
-                      padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
-                      child: Text(
-                        "Create Category",
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.w500),
-                      ))
-                ],
-              )),
-        )
-      ]),
-    )
-    ));
+              future: categories.loadCategories());
+        });
   }
 
-  void _addCategory(Category category) {
-    setState(() {
-      categories.add(category);
-    });
-  }
-
-  bool isValidCategory(String category) {
+  bool isValidCategory(CategoriesProvider provider, String category) {
     if (category.isEmpty ||
-        categories.where((element) => element.name == category).isNotEmpty) {
+        provider.categories
+            .where((element) => element.name == category)
+            .isNotEmpty) {
       return false;
     }
 
     return true;
   }
 
-  List<CardList> _getCardLists() {
+  List<CardList> _getCardLists(CategoriesProvider provider) {
     List<CardList> cardLists = [];
 
-    for (var element in categories) {
+    for (var element in provider.categories) {
       cardLists.addAll(element.cardLists);
     }
 
@@ -159,23 +203,26 @@ class CardListScreenState extends State<CardListScreen> {
     });
   }
 
-  List<CommandBarItem> _buildCommandBar(ExpandProvider provider) {
+  List<CommandBarItem> _buildCommandBar(
+      CategoriesProvider provider, ExpandProvider expandProvider) {
     List<CommandBarItem> list = [];
 
-    if (categories.isEmpty) {
+    if (provider.categories.isEmpty) {
       return list;
     }
 
-    list.add(CommandBarButton(label: const Text("Expand all"), icon: const Icon(FluentIcons.expand_all), onPressed: () {
-      setState(() {
-        provider.expandAll();
-      });
-    }));
-    list.add(CommandBarButton(label: const Text("Collapse all"), icon: const Icon(FluentIcons.collapse_all), onPressed: () {
-      setState(() {
-        provider.collapseAll();
-      });
-    }));
+    list.add(CommandBarButton(
+        label: const Text("Expand all"),
+        icon: const Icon(FluentIcons.expand_all),
+        onPressed: () {
+          expandProvider.expandAll();
+        }));
+    list.add(CommandBarButton(
+        label: const Text("Collapse all"),
+        icon: const Icon(FluentIcons.collapse_all),
+        onPressed: () {
+          expandProvider.collapseAll();
+        }));
 
     list.add(const CommandBarSeparator());
 
@@ -189,14 +236,9 @@ class CardListScreenState extends State<CardListScreen> {
         wrappedItem: CommandBarButton(
             label: const Text("Sort Categories"),
             icon: const Icon(FluentIcons.sort),
-            onPressed: () => {
-              setState(() {
-                categories.sort((a, b) =>
-                    a.name.toLowerCase().compareTo(b.name.toLowerCase()));
-              })
-            })));
+            onPressed: () => provider.sortAlphabetically())));
 
-    List<CardList> cardLists = _getCardLists();
+    List<CardList> cardLists = _getCardLists(provider);
 
     if (cardLists.isNotEmpty) {
       list.add(const CommandBarSeparator());
@@ -207,7 +249,6 @@ class CardListScreenState extends State<CardListScreen> {
           onPressed: () => {
                 questionController.clear(),
                 answerController.clear(),
-
                 showDialog(
                     context: context,
                     builder: (context) {
@@ -303,17 +344,18 @@ class CardListScreenState extends State<CardListScreen> {
     return list;
   }
 
-  CategoriesList? _buildCategoriesList(ExpandProvider provider) {
-    if (categories.isEmpty) {
+  CategoriesList? _buildCategoriesList(
+      CategoriesProvider provider, ExpandProvider expandProvider) {
+    if (provider.categories.isEmpty) {
       return null;
     }
 
-    for (var element in categories) {
-      provider.map.putIfAbsent(element, () => false);
+    for (var element in provider.categories) {
+      expandProvider.map.putIfAbsent(element, () => false);
     }
 
     return CategoriesList(
-      categories: categories,
+      categories: provider.categories,
       updateMain: () => update(),
       renameCategory: (s) {
         inputController.text = s;
@@ -329,18 +371,16 @@ class CardListScreenState extends State<CardListScreen> {
                       const Align(
                           alignment: Alignment.centerLeft,
                           child: Padding(
-                            padding:
-                            EdgeInsets.only(bottom: 10.0),
-                            child: Text(
-                                "Enter the new name of the category"),
+                            padding: EdgeInsets.only(bottom: 10.0),
+                            child: Text("Enter the new name of the category"),
                           )),
                       TextBox(
                           controller: inputController,
                           onChanged: (s) => {
-                            setState(() {}),
-                          },
-                          padding: const EdgeInsets.only(
-                              top: 5.0, bottom: 10.0))
+                                setState(() {}),
+                              },
+                          padding:
+                              const EdgeInsets.only(top: 5.0, bottom: 10.0))
                     ],
                   ),
                   actions: [
@@ -353,18 +393,17 @@ class CardListScreenState extends State<CardListScreen> {
                       valueListenable: inputController,
                       builder: (context, value, child) {
                         return FilledButton(
-                          onPressed: isValidCategory(
-                              inputController.text)
-                              ? () {
-                            categories
-                                .firstWhere((element) =>
-                            element.name == s)
-                                .name =
-                                inputController.text;
+                          onPressed:
+                              isValidCategory(provider, inputController.text)
+                                  ? () {
+                                      provider.categories
+                                          .firstWhere(
+                                              (element) => element.name == s)
+                                          .name = inputController.text;
 
-                            Navigator.pop(context);
-                          }
-                              : null,
+                                      Navigator.pop(context);
+                                    }
+                                  : null,
                           child: const Text("Rename"),
                         );
                       },
@@ -373,9 +412,10 @@ class CardListScreenState extends State<CardListScreen> {
             }).then((value) => setState(() {}));
       },
       deleteCategory: (s) {
-        categories.remove(categories
-            .firstWhere((element) => element.name == s));
-        setState(() {});
+        Category category =
+            provider.categories.firstWhere((element) => element.name == s);
+
+        provider.removeCategory(category);
       },
     );
   }

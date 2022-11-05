@@ -18,4 +18,11 @@ class Category {
         .toLowerCase()
         .compareTo(b.name.toString().toLowerCase()));
   }
+
+  Category.fromJson(Map<dynamic, dynamic> json)
+      : name = json['name'], cardLists = [];
+
+  Map<String, dynamic> toJson() => {
+    'name': name
+  };
 }
