@@ -12,12 +12,11 @@ import 'categories_provider.dart';
 import 'expand_provider.dart';
 
 typedef StringCallback = void Function(String);
-typedef CardListCallback = void Function(CardListScreen);
+typedef CategoryCallback = void Function(Category);
 
 class CategoriesListEntry extends StatefulWidget {
   final Category category;
-  final StringCallback renameCategory;
-  final StringCallback deleteCategory;
+  final CategoryCallback renameCategory;
   final VoidCallback updateMain;
 
   final inputController = TextEditingController();
@@ -26,7 +25,6 @@ class CategoriesListEntry extends StatefulWidget {
       {Key? key,
       required this.category,
       required this.renameCategory,
-      required this.deleteCategory,
       required this.updateMain})
       : super(key: key);
 
@@ -78,7 +76,7 @@ class ListEntryState extends State<CategoriesListEntry> {
                       material.PopupMenuItem(
                           onTap: () {
                             Future.delayed(Duration.zero,
-                                () => widget.renameCategory(name));
+                                () => widget.renameCategory(widget.category));
                           },
                           child: Row(children: const [
                             Icon(FluentIcons.rename),
@@ -88,7 +86,7 @@ class ListEntryState extends State<CategoriesListEntry> {
                           ])),
                       material.PopupMenuItem(
                         onTap: () {
-                          widget.deleteCategory(name);
+                          categories.removeCategory(widget.category);
                         },
                         child: Row(children: const [
                           Icon(FluentIcons.delete),

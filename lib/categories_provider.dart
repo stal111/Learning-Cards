@@ -27,7 +27,7 @@ class CategoriesProvider with ChangeNotifier {
   void addCategory(Category category) {
     _categories.add(category);
 
-    StorageHelper.saveCategories(_categories);
+    save();
 
     notifyListeners();
   }
@@ -35,7 +35,7 @@ class CategoriesProvider with ChangeNotifier {
   void removeCategory(Category category) {
     _categories.remove(category);
 
-    StorageHelper.saveCategories(_categories);
+    save();
 
     notifyListeners();
   }
@@ -44,7 +44,7 @@ class CategoriesProvider with ChangeNotifier {
     _categories
         .sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
 
-    StorageHelper.saveCategories(_categories);
+    save();
 
     notifyListeners();
   }
@@ -65,5 +65,11 @@ class CategoriesProvider with ChangeNotifier {
       return this.search(search);
     }
     return categories;
+  }
+
+  void renameCategory(Category category, String newName) {
+    category.name = newName;
+
+    save();
   }
 }

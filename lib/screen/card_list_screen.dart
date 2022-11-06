@@ -385,68 +385,59 @@ class CardListScreenState extends State<CardListScreen> {
     }
 
     return CategoriesList(
-      categories: categoriesToDisplay,
-      updateMain: () => update(),
-      renameCategory: (s) {
-        inputController.text = s;
-        showDialog(
-            context: context,
-            builder: (context) {
-              return ContentDialog(
-                  title: const Text("Rename Category"),
-                  content: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Align(
-                          alignment: Alignment.centerLeft,
-                          child: Padding(
-                            padding: EdgeInsets.only(bottom: 10.0),
-                            child: Text("Enter the new name of the category"),
-                          )),
-                      TextBox(
-                          controller: inputController,
-                          onChanged: (s) => {
-                                setState(() {}),
-                              },
-                          padding:
-                              const EdgeInsets.only(top: 5.0, bottom: 10.0))
-                    ],
-                  ),
-                  actions: [
-                    Button(
-                        child: const Text("Cancel"),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        }),
-                    ValueListenableBuilder(
-                      valueListenable: inputController,
-                      builder: (context, value, child) {
-                        return FilledButton(
-                          onPressed:
-                              isValidCategory(provider, inputController.text)
-                                  ? () {
-                                      provider.categories
-                                          .firstWhere(
-                                              (element) => element.name == s)
-                                          .name = inputController.text;
+        categories: categoriesToDisplay,
+        updateMain: () => update(),
+        renameCategory: (category) {
+          inputController.text = category.name;
+          showDialog(
+              context: context,
+              builder: (context) {
+                return ContentDialog(
+                    title: const Text("Rename Category"),
+                    content: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Align(
+                            alignment: Alignment.centerLeft,
+                            child: Padding(
+                              padding: EdgeInsets.only(bottom: 10.0),
+                              child: Text("Enter the new name of the category"),
+                            )),
+                        TextBox(
+                            controller: inputController,
+                            onChanged: (s) => {
+                                  setState(() {}),
+                                },
+                            padding:
+                                const EdgeInsets.only(top: 5.0, bottom: 10.0))
+                      ],
+                    ),
+                    actions: [
+                      Button(
+                          child: const Text("Cancel"),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          }),
+                      ValueListenableBuilder(
+                        valueListenable: inputController,
+                        builder: (context, value, child) {
+                          return FilledButton(
+                            onPressed:
+                                isValidCategory(provider, inputController.text)
+                                    ? () {
+                                        provider.renameCategory(
+                                            category, inputController.text);
 
-                                      Navigator.pop(context);
-                                    }
-                                  : null,
-                          child: const Text("Rename"),
-                        );
-                      },
-                    )
-                  ]);
-            }).then((value) => setState(() {}));
-      },
-      deleteCategory: (s) {
-        Category category =
-            provider.categories.firstWhere((element) => element.name == s);
-
-        provider.removeCategory(category);
-      },
-    );
+                                        Navigator.pop(context);
+                                      }
+                                    : null,
+                            child: const Text("Rename"),
+                          );
+                        },
+                      )
+                    ]);
+              }).then((value) => setState(() {}));
+        });
   }
 }

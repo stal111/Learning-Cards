@@ -5,8 +5,7 @@ import 'package:learning_cards/category.dart';
 
 class CategoriesList extends StatelessWidget {
   final List<Category> categories;
-  final StringCallback renameCategory;
-  final StringCallback deleteCategory;
+  final CategoryCallback renameCategory;
   final VoidCallback updateMain;
 
   late final List<CategoriesListEntry> entries;
@@ -15,7 +14,6 @@ class CategoriesList extends StatelessWidget {
       {Key? key,
       required this.categories,
       required this.renameCategory,
-      required this.deleteCategory,
       required this.updateMain})
       : super(key: key) {
     entries = List.generate(
@@ -23,7 +21,6 @@ class CategoriesList extends StatelessWidget {
         (index) => CategoriesListEntry(
             category: categories[index],
             renameCategory: renameCategory,
-            deleteCategory: deleteCategory,
             updateMain: updateMain));
   }
 
