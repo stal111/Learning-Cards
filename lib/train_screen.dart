@@ -9,11 +9,12 @@ import 'package:learning_cards/card_list.dart';
 import 'package:learning_cards/question.dart';
 import 'package:learning_cards/settings_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:window_manager/window_manager.dart';
 
 import 'app_theme.dart';
+import 'button/window_buttons.dart';
 
 class TrainScreen extends StatefulWidget {
-
   final CardList cardList;
 
   const TrainScreen({Key? key, required this.cardList}) : super(key: key);
@@ -51,7 +52,6 @@ class TrainScreenState extends State<TrainScreen>
     }
 
     cards = questions.length;
-
 
     _controller1 = AnimationController(
         duration: const Duration(milliseconds: 100), vsync: this);
@@ -94,65 +94,74 @@ class TrainScreenState extends State<TrainScreen>
         };
 
     return NavigationView(
-      appBar: NavigationAppBar(title: Text(widget.cardList.name, style: const TextStyle(fontWeight: FontWeight.w500)), actions: Container(),),
-      content: Container(
-      child: Container(
-        child: Center(
-            child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10.0),
-                child: material.LinearProgressIndicator(
-                    value: _progress, minHeight: 20.0)),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 10.0),
-              child: Text(
-                  '$finishedCards/$cards       (${(_progress * 100).round()}%)',
-                  style: const TextStyle(fontSize: 20)),
-            ),
-            Expanded(
+        appBar: NavigationAppBar(
+            title: DragToMoveArea(
+                child: Text(widget.cardList.name,
+                    style: const TextStyle(fontWeight: FontWeight.w500))),
+            actions: Container(
+                padding: const EdgeInsets.all(10.0),
                 child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: _createCards(),
-            )),
-            Padding(
-                padding: const EdgeInsets.only(top: 20.0),
-                child: FilledButton(
-                    onPressed: !showBack
-                        ? () => setState(() {
-                              showBack = true;
-                            })
-                        : null,
-                    child: Container(
-                      padding: const EdgeInsets.all(5.0),
-                      child: const Text("Show Back",
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.w500)),
-                    ))),
-            Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: const [WindowButtons()],
+                ))),
+        content: Container(
+          child: Container(
+            child: Center(
+                child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                AnimatedButton(
-                  controller: _controller1,
-                  status: Status.needsPractise,
-                  onPressed: callback,
+                Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10.0),
+                    child: material.LinearProgressIndicator(
+                        value: _progress, minHeight: 20.0)),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 10.0),
+                  child: Text(
+                      '$finishedCards/$cards       (${(_progress * 100).round()}%)',
+                      style: const TextStyle(fontSize: 20)),
                 ),
-                AnimatedButton(
-                    controller: _controller2,
-                    status: Status.okay,
-                    onPressed: callback,
-                    padding: true),
-                AnimatedButton(
-                    controller: _controller3,
-                    status: Status.done,
-                    onPressed: callback)
+                Expanded(
+                    child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: _createCards(),
+                )),
+                Padding(
+                    padding: const EdgeInsets.only(top: 20.0),
+                    child: FilledButton(
+                        onPressed: !showBack
+                            ? () => setState(() {
+                                  showBack = true;
+                                })
+                            : null,
+                        child: Container(
+                          padding: const EdgeInsets.all(5.0),
+                          child: const Text("Show Back",
+                              style: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.w500)),
+                        ))),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    AnimatedButton(
+                      controller: _controller1,
+                      status: Status.needsPractise,
+                      onPressed: callback,
+                    ),
+                    AnimatedButton(
+                        controller: _controller2,
+                        status: Status.okay,
+                        onPressed: callback,
+                        padding: true),
+                    AnimatedButton(
+                        controller: _controller3,
+                        status: Status.done,
+                        onPressed: callback)
+                  ],
+                )
               ],
-            )
-          ],
-        )),
-      ),
-    ));
+            )),
+          ),
+        ));
   }
 
   void finishCard() {
@@ -185,9 +194,11 @@ class TrainScreenState extends State<TrainScreen>
                 color: FluentTheme.of(context).acrylicBackgroundColor,
                 border: Border.all(width: 3, color: Colors.blue),
                 borderRadius: BorderRadius.circular(10.0)),
-            child: Row(children: [Text(finished ? "" : questions[finishedCards].questionText,
-                style: const TextStyle(
-                    fontSize: 20.0, fontWeight: FontWeight.w600))]))
+            child: Row(children: [
+              Text(finished ? "" : questions[finishedCards].questionText,
+                  style: const TextStyle(
+                      fontSize: 20.0, fontWeight: FontWeight.w600))
+            ]))
       ],
     )));
 
@@ -205,13 +216,20 @@ class TrainScreenState extends State<TrainScreen>
             padding: const EdgeInsets.all(15.0),
             decoration: BoxDecoration(
                 color: FluentTheme.of(context).acrylicBackgroundColor,
-                border: Border.all(width: 3, color: showBack ? Colors.blue : Colors.grey.toAccentColor().lighter),
+                border: Border.all(
+                    width: 3,
+                    color: showBack
+                        ? Colors.blue
+                        : Colors.grey.toAccentColor().lighter),
                 borderRadius: BorderRadius.circular(10.0)),
             child: Row(
               mainAxisAlignment:
                   showBack ? MainAxisAlignment.start : MainAxisAlignment.center,
               children: [
-                Text(showBack && !finished ? questions[finishedCards].answerText : "?",
+                Text(
+                    showBack && !finished
+                        ? questions[finishedCards].answerText
+                        : "?",
                     style: const TextStyle(
                         fontSize: 20.0, fontWeight: FontWeight.w600))
               ],
