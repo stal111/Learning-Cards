@@ -8,6 +8,7 @@ import 'package:learning_cards/multi_value_listenable_builder.dart';
 import 'package:learning_cards/screen/card_list_screen.dart';
 import 'package:learning_cards/screen/home_screen.dart';
 import 'package:learning_cards/screen/settings_screen.dart';
+import 'package:learning_cards/settings_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:system_theme/system_theme.dart';
@@ -36,6 +37,8 @@ void main() async {
   await windowManager.setPreventClose(true);
   await windowManager.setSkipTaskbar(false);
 
+  await SharedPreferences.getInstance();
+
   runApp(const MyApp());
 }
 
@@ -45,8 +48,11 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-        create: (_) => AppTheme(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => AppTheme()),
+        ChangeNotifierProvider(create: (context) => SettingsProvider())
+      ],
         builder: (context, _) {
           final appTheme = context.watch<AppTheme>();
 

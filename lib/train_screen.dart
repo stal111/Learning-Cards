@@ -1,10 +1,13 @@
 import 'dart:ffi';
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart' as material;
 import 'package:learning_cards/button/animated_button.dart';
 import 'package:learning_cards/card_list.dart';
+import 'package:learning_cards/question.dart';
+import 'package:learning_cards/settings_provider.dart';
 import 'package:provider/provider.dart';
 
 import 'app_theme.dart';
@@ -25,6 +28,8 @@ class TrainScreenState extends State<TrainScreen>
   late AnimationController _controller2;
   late AnimationController _controller3;
 
+  late List<Question> questions;
+
   late int cards;
   int finishedCards = 0;
 
@@ -37,7 +42,16 @@ class TrainScreenState extends State<TrainScreen>
   initState() {
     super.initState();
 
-    cards = widget.cardList.questions.length;
+    final settings = Provider.of<SettingsProvider>(context, listen: false);
+
+    questions = widget.cardList.questions.toList();
+
+    if (settings.randomizeCardOrder) {
+      questions.shuffle(Random());
+    }
+
+    cards = questions.length;
+
 
     _controller1 = AnimationController(
         duration: const Duration(milliseconds: 100), vsync: this);
@@ -63,7 +77,7 @@ class TrainScreenState extends State<TrainScreen>
 
   @override
   Widget build(BuildContext context) {
-    final appTheme = context.watch<AppTheme>();
+    final settings = context.watch<SettingsProvider>();
 
     callback(status) => {
           setState(() {
@@ -171,7 +185,7 @@ class TrainScreenState extends State<TrainScreen>
                 color: FluentTheme.of(context).acrylicBackgroundColor,
                 border: Border.all(width: 3, color: Colors.blue),
                 borderRadius: BorderRadius.circular(10.0)),
-            child: Row(children: [Text(finished ? "" : widget.cardList.questions[finishedCards].questionText,
+            child: Row(children: [Text(finished ? "" : questions[finishedCards].questionText,
                 style: const TextStyle(
                     fontSize: 20.0, fontWeight: FontWeight.w600))]))
       ],
@@ -197,7 +211,7 @@ class TrainScreenState extends State<TrainScreen>
               mainAxisAlignment:
                   showBack ? MainAxisAlignment.start : MainAxisAlignment.center,
               children: [
-                Text(showBack && !finished ? widget.cardList.questions[finishedCards].answerText : "?",
+                Text(showBack && !finished ? questions[finishedCards].answerText : "?",
                     style: const TextStyle(
                         fontSize: 20.0, fontWeight: FontWeight.w600))
               ],

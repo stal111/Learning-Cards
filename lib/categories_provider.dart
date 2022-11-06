@@ -22,6 +22,8 @@ class CategoriesProvider with ChangeNotifier {
     }
 
     loaded = true;
+
+    notifyListeners();
   }
 
   void addCategory(Category category) {
