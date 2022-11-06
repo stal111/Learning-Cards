@@ -8,6 +8,7 @@ import 'package:learning_cards/screen/card_list_screen.dart';
 import 'package:learning_cards/train_screen.dart';
 import 'package:provider/provider.dart';
 
+import 'categories_provider.dart';
 import 'expand_provider.dart';
 
 typedef StringCallback = void Function(String);
@@ -38,12 +39,14 @@ class ListEntryState extends State<CategoriesListEntry> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<ExpandProvider>(context);
+    final provider = context.watch<ExpandProvider>();
+    final categories = context.watch<CategoriesProvider>();
 
-    return Column(children: _createChildren(provider));
+    return Column(children: _createChildren(categories, provider));
   }
 
-  List<Widget> _createChildren(final ExpandProvider provider) {
+  List<Widget> _createChildren(
+      final CategoriesProvider categories, final ExpandProvider provider) {
     final theme = FluentTheme.of(context);
     final name = widget.category.name;
 
@@ -122,7 +125,8 @@ class ListEntryState extends State<CategoriesListEntry> {
                     horizontal: 4.0,
                   ),
                   decoration: BoxDecoration(
-                      color: ButtonThemeData.uncheckedInputColor(theme, states, transparentWhenNone: true),
+                      color: ButtonThemeData.uncheckedInputColor(theme, states,
+                          transparentWhenNone: true),
                       borderRadius: BorderRadius.circular(6)),
                   duration: theme.fastAnimationDuration,
                   curve: theme.animationCurve,
@@ -178,6 +182,7 @@ class ListEntryState extends State<CategoriesListEntry> {
                                           ? () {
                                               setState(() {
                                                 widget.category.addCardList(
+                                                    categories,
                                                     CardList(
                                                         name: widget
                                                             .inputController
@@ -230,7 +235,8 @@ class ListEntryState extends State<CategoriesListEntry> {
                         ),
                         decoration: BoxDecoration(
                             color: ButtonThemeData.uncheckedInputColor(
-                                theme, states, transparentWhenNone: true),
+                                theme, states,
+                                transparentWhenNone: true),
                             borderRadius: BorderRadius.circular(6)),
                         duration: theme.fastAnimationDuration,
                         curve: theme.animationCurve,

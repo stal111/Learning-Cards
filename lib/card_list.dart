@@ -43,6 +43,25 @@ class CardList {
         ? "${DateFormat.yMMMd().format(_lastTrained!)} - ${DateFormat.Hm().format(_lastTrained!)}"
         : "Not trained recently";
   }
+
+  CardList.fromJson(Map<dynamic, dynamic> json)
+      : name = json["name"],
+        status = Status.values[json["status"]],
+        _lastTrained = json.containsKey("lastTrained")
+            ? DateTime.tryParse(json["lastTrained"])
+            : null;
+
+  Map<String, dynamic> toJson() {
+    var map = <String, dynamic>{};
+
+    map["name"] = name;
+    map["status"] = status.index;
+    if (_lastTrained != null) {
+      map["lastTrained"] = _lastTrained?.toIso8601String();
+    }
+
+    return map;
+  }
 }
 
 enum Status {

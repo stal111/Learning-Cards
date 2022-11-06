@@ -4,7 +4,6 @@ import 'package:learning_cards/storage/storage_helper.dart';
 import 'category.dart';
 
 class CategoriesProvider with ChangeNotifier {
-
   final List<Category> _categories = [];
 
   List<Category> get categories => _categories;
@@ -42,10 +41,15 @@ class CategoriesProvider with ChangeNotifier {
   }
 
   void sortAlphabetically() {
-    _categories.sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+    _categories
+        .sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
 
     StorageHelper.saveCategories(_categories);
 
     notifyListeners();
+  }
+
+  void save() {
+    StorageHelper.saveCategories(_categories);
   }
 }
