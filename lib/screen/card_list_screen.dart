@@ -21,6 +21,7 @@ class CardListScreenState extends State<CardListScreen> {
   final inputController = TextEditingController();
   final questionController = TextEditingController();
   final answerController = TextEditingController();
+  final searchController = TextEditingController();
 
   @override
   void dispose() {
@@ -29,6 +30,7 @@ class CardListScreenState extends State<CardListScreen> {
     inputController.dispose();
     questionController.dispose();
     answerController.dispose();
+    searchController.dispose();
   }
 
   @override
@@ -45,122 +47,151 @@ class CardListScreenState extends State<CardListScreen> {
               builder: (context, snapshot) {
                 return Container(
                     child: Consumer<ExpandProvider>(
-                        builder:
-                            (context, value, child) => Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Padding(
-                                          padding: const EdgeInsets.all(10.0),
-                                          child: CommandBar(
-                                              primaryItems: _buildCommandBar(
-                                                  categories, value),
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start)),
-                                      Expanded(
-                                          child: _buildCategoriesList(
-                                                  categories, value) ??
-                                              const Center(
-                                                child: Text(
-                                                    "Create a category to get started!"),
-                                              )),
-                                      Container(
-                                        width: 500,
-                                        padding: const EdgeInsets.all(20.0),
-                                        child: FilledButton(
-                                            onPressed: () {
-                                              inputController.clear();
-
-                                              showDialog(
-                                                  context: context,
-                                                  builder: (context) {
-                                                    return ContentDialog(
-                                                        title: const Text(
-                                                            "Create Category"),
-                                                        content: Column(
+                        builder: (context, value, child) => Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: categories
+                                                .categories.isNotEmpty
+                                            ? [
+                                                Flexible(
+                                                    flex: 1,
+                                                    child: TextBox(
+                                                        prefix: const Padding(
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  left: 10.0),
+                                                          child: Icon(
+                                                              FluentIcons
+                                                                  .search),
+                                                        ),
+                                                        controller:
+                                                            searchController,
+                                                        onChanged: (value) =>
+                                                            setState(() {}),
+                                                        placeholder: "Search")),
+                                                Flexible(
+                                                    flex: 3,
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 15.0),
+                                                      child: CommandBar(
+                                                          primaryItems:
+                                                              _buildCommandBar(
+                                                                  categories,
+                                                                  value),
                                                           mainAxisAlignment:
                                                               MainAxisAlignment
-                                                                  .start,
-                                                          mainAxisSize:
-                                                              MainAxisSize.min,
-                                                          children: [
-                                                            const Align(
-                                                                alignment: Alignment
-                                                                    .centerLeft,
-                                                                child: Padding(
-                                                                  padding: EdgeInsets
-                                                                      .only(
-                                                                          bottom:
-                                                                              10.0),
-                                                                  child: Text(
-                                                                      "Enter the name of the category"),
-                                                                )),
-                                                            TextBox(
-                                                                controller:
-                                                                    inputController,
-                                                                onChanged:
-                                                                    (s) => {},
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                            .only(
-                                                                        top:
-                                                                            5.0,
-                                                                        bottom:
-                                                                            10.0))
-                                                          ],
-                                                        ),
-                                                        actions: [
-                                                          Button(
-                                                              child: const Text(
-                                                                  "Cancel"),
-                                                              onPressed: () {
-                                                                Navigator.pop(
-                                                                    context);
-                                                              }),
-                                                          ValueListenableBuilder(
-                                                            valueListenable:
-                                                                inputController,
-                                                            builder: (context,
-                                                                value, child) {
-                                                              return FilledButton(
-                                                                onPressed: isValidCategory(
-                                                                        categories,
-                                                                        inputController
-                                                                            .text)
-                                                                    ? () {
-                                                                        categories
-                                                                            .addCategory(Category(inputController.text));
-
-                                                                        Navigator.pop(
-                                                                            context);
-                                                                      }
-                                                                    : null,
-                                                                child: const Text(
-                                                                    "Create"),
-                                                              );
-                                                            },
-                                                          )
-                                                        ]);
-                                                  });
-                                            },
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: const [
-                                                Padding(
-                                                    padding: EdgeInsets.only(
-                                                        top: 10.0,
-                                                        bottom: 10.0),
-                                                    child: Text(
-                                                      "Create Category",
-                                                      style: TextStyle(
-                                                          fontSize: 20,
-                                                          fontWeight:
-                                                              FontWeight.w500),
+                                                                  .start),
                                                     ))
-                                              ],
-                                            )),
-                                      )
-                                    ])));
+                                              ]
+                                            : [],
+                                      )),
+                                  Expanded(
+                                      child: _buildCategoriesList(
+                                          categories, value)),
+                                  Container(
+                                    width: 500,
+                                    padding: const EdgeInsets.all(20.0),
+                                    child: FilledButton(
+                                        onPressed: () {
+                                          inputController.clear();
+
+                                          showDialog(
+                                              context: context,
+                                              builder: (context) {
+                                                return ContentDialog(
+                                                    title: const Text(
+                                                        "Create Category"),
+                                                    content: Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .start,
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        const Align(
+                                                            alignment: Alignment
+                                                                .centerLeft,
+                                                            child: Padding(
+                                                              padding: EdgeInsets
+                                                                  .only(
+                                                                      bottom:
+                                                                          10.0),
+                                                              child: Text(
+                                                                  "Enter the name of the category"),
+                                                            )),
+                                                        TextBox(
+                                                            controller:
+                                                                inputController,
+                                                            onChanged: (s) =>
+                                                                {},
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .only(
+                                                                    top: 5.0,
+                                                                    bottom:
+                                                                        10.0))
+                                                      ],
+                                                    ),
+                                                    actions: [
+                                                      Button(
+                                                          child: const Text(
+                                                              "Cancel"),
+                                                          onPressed: () {
+                                                            Navigator.pop(
+                                                                context);
+                                                          }),
+                                                      ValueListenableBuilder(
+                                                        valueListenable:
+                                                            inputController,
+                                                        builder: (context,
+                                                            value, child) {
+                                                          return FilledButton(
+                                                            onPressed: isValidCategory(
+                                                                    categories,
+                                                                    inputController
+                                                                        .text)
+                                                                ? () {
+                                                                    categories.addCategory(
+                                                                        Category(
+                                                                            inputController.text));
+
+                                                                    Navigator.pop(
+                                                                        context);
+                                                                  }
+                                                                : null,
+                                                            child: const Text(
+                                                                "Create"),
+                                                          );
+                                                        },
+                                                      )
+                                                    ]);
+                                              });
+                                        },
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: const [
+                                            Padding(
+                                                padding: EdgeInsets.only(
+                                                    top: 10.0, bottom: 10.0),
+                                                child: Text(
+                                                  "Create Category",
+                                                  style: TextStyle(
+                                                      fontSize: 20,
+                                                      fontWeight:
+                                                          FontWeight.w500),
+                                                ))
+                                          ],
+                                        )),
+                                  )
+                                ])));
               },
               future: categories.loadCategories());
         });
@@ -207,10 +238,6 @@ class CardListScreenState extends State<CardListScreen> {
       CategoriesProvider provider, ExpandProvider expandProvider) {
     List<CommandBarItem> list = [];
 
-    if (provider.categories.isEmpty) {
-      return list;
-    }
-
     list.add(CommandBarButton(
         label: const Text("Expand all"),
         icon: const Icon(FluentIcons.expand_all),
@@ -226,10 +253,6 @@ class CardListScreenState extends State<CardListScreen> {
 
     list.add(const CommandBarSeparator());
 
-    list.add(CommandBarButton(
-        label: const Text("Search"),
-        icon: const Icon(FluentIcons.search),
-        onPressed: () => {}));
     list.add(CommandBarBuilderItem(
         builder: (context, displayMode, child) => Tooltip(
             message: "Sorts all categories alphabetically.", child: child),
@@ -344,18 +367,25 @@ class CardListScreenState extends State<CardListScreen> {
     return list;
   }
 
-  CategoriesList? _buildCategoriesList(
+  Widget _buildCategoriesList(
       CategoriesProvider provider, ExpandProvider expandProvider) {
     if (provider.categories.isEmpty) {
-      return null;
+      return const Center(child: Text("Create a category to get started!"));
     }
 
     for (var element in provider.categories) {
       expandProvider.map.putIfAbsent(element, () => false);
     }
 
+    List<Category> categoriesToDisplay =
+        provider.getCategoriesToDisplay(search: searchController.text);
+
+    if (categoriesToDisplay.isEmpty) {
+      return const Center(child: Text("No category matched your search."));
+    }
+
     return CategoriesList(
-      categories: provider.categories,
+      categories: categoriesToDisplay,
       updateMain: () => update(),
       renameCategory: (s) {
         inputController.text = s;

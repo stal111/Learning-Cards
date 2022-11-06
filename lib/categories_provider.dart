@@ -52,4 +52,18 @@ class CategoriesProvider with ChangeNotifier {
   void save() {
     StorageHelper.saveCategories(_categories);
   }
+
+  List<Category> search(String search) {
+    return categories
+        .where((element) =>
+            element.name.toLowerCase().contains(search.toLowerCase()))
+        .toList();
+  }
+
+  List<Category> getCategoriesToDisplay({String? search}) {
+    if (search != null && search != "") {
+      return this.search(search);
+    }
+    return categories;
+  }
 }
