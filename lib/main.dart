@@ -7,6 +7,7 @@ import 'package:learning_cards/category.dart';
 import 'package:learning_cards/multi_value_listenable_builder.dart';
 import 'package:learning_cards/screen/card_list_screen.dart';
 import 'package:learning_cards/screen/home_screen.dart';
+import 'package:learning_cards/screen/settings_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:system_theme/system_theme.dart';
@@ -174,6 +175,12 @@ class _MyHomePageState extends State<MainScreen> with WindowListener {
                   icon: const Icon(FluentIcons.list),
                   title: const Text("Card Lists"),
                   body: const CardListScreen())
+            ],
+            footerItems: [
+              PaneItem(
+                  icon: const Icon(FluentIcons.settings),
+                  title: const Text("Settings"),
+                  body: const SettingsScreen())
             ]));
   }
 
