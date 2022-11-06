@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:intl/intl.dart';
+import 'package:learning_cards/categories_provider.dart';
 import 'package:learning_cards/question.dart';
 
 class CardList {
@@ -16,8 +19,11 @@ class CardList {
 
   CardList({required this.name, required this.status});
 
-  void addQuestion(String questionText, String answerText) {
+  void addQuestion(
+      CategoriesProvider categories, String questionText, String answerText) {
     questions.add(Question(questionText: questionText, answerText: answerText));
+
+    categories.save();
   }
 
   int getCardsAmount() {
@@ -49,15 +55,31 @@ class CardList {
         status = Status.values[json["status"]],
         _lastTrained = json.containsKey("lastTrained")
             ? DateTime.tryParse(json["lastTrained"])
-            : null;
+            : null,
+        questions = decodeQuestions(json);
+
+  static List<Question> decodeQuestions(Map<dynamic, dynamic> json) {
+    if (json.containsKey("questions")) {
+      List<dynamic> list = jsonDecode(json["questions"]);
+
+      return list.map((e) => Question.fromJson(jsonDecode(e))).toList();
+    }
+    return [];
+  }
 
   Map<String, dynamic> toJson() {
     var map = <String, dynamic>{};
 
     map["name"] = name;
     map["status"] = status.index;
+
     if (_lastTrained != null) {
       map["lastTrained"] = _lastTrained?.toIso8601String();
+    }
+
+    if (questions.isNotEmpty) {
+      map["questions"] =
+          jsonEncode(questions.map((e) => jsonEncode(e.toJson())).toList());
     }
 
     return map;

@@ -218,9 +218,10 @@ class CardListScreenState extends State<CardListScreen> {
     return cardLists;
   }
 
-  void _addCard(CardList list, String questionText, String answerText) {
+  void _addCard(CategoriesProvider categories, CardList list,
+      String questionText, String answerText) {
     setState(() {
-      list.addQuestion(questionText, answerText);
+      list.addQuestion(categories, questionText, answerText);
     });
   }
 
@@ -348,6 +349,7 @@ class CardListScreenState extends State<CardListScreen> {
                                               answerController.text.isNotEmpty
                                           ? () {
                                               _addCard(
+                                                  provider,
                                                   cardLists[0],
                                                   questionController.text,
                                                   answerController.text);
