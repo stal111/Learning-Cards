@@ -23,6 +23,8 @@ class CardListScreenState extends State<CardListScreen> {
   final answerController = TextEditingController();
   final searchController = TextEditingController();
 
+  ValueNotifier<CardList?> cardListNotifier = ValueNotifier(null);
+
   @override
   void dispose() {
     super.dispose();
@@ -31,6 +33,8 @@ class CardListScreenState extends State<CardListScreen> {
     questionController.dispose();
     answerController.dispose();
     searchController.dispose();
+
+    cardListNotifier.dispose();
   }
 
   @override
@@ -208,11 +212,13 @@ class CardListScreenState extends State<CardListScreen> {
     return true;
   }
 
-  List<CardList> _getCardLists(CategoriesProvider provider) {
-    List<CardList> cardLists = [];
+  Map<CardList, Category> _getCardLists(CategoriesProvider provider) {
+    Map<CardList, Category> cardLists = {};
 
-    for (var element in provider.categories) {
-      cardLists.addAll(element.cardLists);
+    for (var category in provider.categories) {
+      for (var cardList in category.cardLists) {
+        cardLists[cardList] = category;
+      }
     }
 
     return cardLists;
@@ -262,7 +268,9 @@ class CardListScreenState extends State<CardListScreen> {
             icon: const Icon(FluentIcons.sort),
             onPressed: () => provider.sortAlphabetically())));
 
-    List<CardList> cardLists = _getCardLists(provider);
+    Map<CardList, Category> cardLists = _getCardLists(provider);
+    List<CardList> keys = cardLists.keys.toList();
+    List<Category> values = cardLists.values.toList();
 
     if (cardLists.isNotEmpty) {
       list.add(const CommandBarSeparator());
@@ -273,6 +281,7 @@ class CardListScreenState extends State<CardListScreen> {
           onPressed: () => {
                 questionController.clear(),
                 answerController.clear(),
+                cardListNotifier.value = null,
                 showDialog(
                     context: context,
                     builder: (context) {
@@ -294,14 +303,24 @@ class CardListScreenState extends State<CardListScreen> {
                                   child: Padding(
                                     padding:
                                         const EdgeInsets.only(bottom: 10.0),
-                                    child: DropDownButton(
-                                        items: List.generate(
-                                            cardLists.length,
-                                            (index) => MenuFlyoutItem(
-                                                text:
-                                                    Text(cardLists[index].name),
-                                                onPressed: () => {})),
-                                        title: const Text("Choose Card List")),
+                                    child: ValueListenableBuilder(
+                                        valueListenable: cardListNotifier,
+                                        builder: (context, value, child) {
+                                          return DropDownButton(
+                                              items: List.generate(
+                                                  cardLists.length,
+                                                  (index) => MenuFlyoutItem(
+                                                      text: Text(
+                                                          "${keys[index].name} (${values[index].name})"),
+                                                      onPressed: () => {
+                                                            cardListNotifier
+                                                                    .value =
+                                                                keys[index]
+                                                          })),
+                                              title: Text(cardListNotifier
+                                                      .value?.name ??
+                                                  "Choose Card List"));
+                                        }),
                                   )),
                               const Align(
                                   alignment: Alignment.centerLeft,
@@ -340,23 +359,25 @@ class CardListScreenState extends State<CardListScreen> {
                             MultiValueListenableBuilder(
                               valueListenables: [
                                 questionController,
-                                answerController
+                                answerController,
+                                cardListNotifier
                               ],
                               builder: (context, values) {
                                 return FilledButton(
-                                  onPressed:
-                                      questionController.text.isNotEmpty &&
-                                              answerController.text.isNotEmpty
-                                          ? () {
-                                              _addCard(
-                                                  provider,
-                                                  cardLists[0],
-                                                  questionController.text,
-                                                  answerController.text);
+                                  onPressed: questionController
+                                              .text.isNotEmpty &&
+                                          answerController.text.isNotEmpty &&
+                                          cardListNotifier.value != null
+                                      ? () {
+                                          _addCard(
+                                              provider,
+                                              cardListNotifier.value ?? keys[0],
+                                              questionController.text,
+                                              answerController.text);
 
-                                              Navigator.pop(context);
-                                            }
-                                          : null,
+                                          Navigator.pop(context);
+                                        }
+                                      : null,
                                   child: const Text("Add Card"),
                                 );
                               },
