@@ -311,9 +311,9 @@ class CardListScreenState extends State<CardListScreen> {
                                   )),
                               TextBox(
                                   controller: questionController,
-                                  onChanged: (s) => {
-                                        setState(() {}),
-                                      },
+                                  expands: true,
+                                  minLines: null,
+                                  maxLines: null,
                                   padding: const EdgeInsets.only(
                                       top: 5.0, bottom: 10.0)),
                               const Align(
@@ -324,9 +324,9 @@ class CardListScreenState extends State<CardListScreen> {
                                   )),
                               TextBox(
                                   controller: answerController,
-                                  onChanged: (s) => {
-                                        setState(() {}),
-                                      },
+                                  expands: true,
+                                  minLines: null,
+                                  maxLines: null,
                                   padding: const EdgeInsets.only(
                                       top: 5.0, bottom: 10.0))
                             ],
