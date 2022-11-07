@@ -78,6 +78,7 @@ class TrainScreenState extends State<TrainScreen>
   @override
   Widget build(BuildContext context) {
     final settings = context.watch<SettingsProvider>();
+    final theme = context.watch<AppTheme>();
 
     callback(status) => {
           setState(() {
@@ -105,41 +106,52 @@ class TrainScreenState extends State<TrainScreen>
                   children: const [WindowButtons()],
                 ))),
         content: Container(
-          child: Container(
-            child: Center(
-                child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10.0),
-                    child: material.LinearProgressIndicator(
-                        value: _progress, minHeight: 20.0)),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 10.0),
-                  child: Text(
-                      '$finishedCards/$cards       (${(_progress * 100).round()}%)',
-                      style: const TextStyle(fontSize: 20)),
-                ),
-                Expanded(
-                    child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: _createCards(),
-                )),
-                Padding(
-                    padding: const EdgeInsets.only(top: 20.0),
-                    child: FilledButton(
-                        onPressed: !showBack
-                            ? () => setState(() {
-                                  showBack = true;
-                                })
-                            : null,
-                        child: Container(
-                          padding: const EdgeInsets.all(5.0),
-                          child: const Text("Show Back",
-                              style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.w500)),
-                        ))),
-                Row(
+          color: FluentTheme.of(context).acrylicBackgroundColor,
+          child: Center(
+              child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10.0),
+                  child: material.LinearProgressIndicator(
+                      color: FluentTheme.of(context).accentColor,
+                      backgroundColor:
+                          FluentTheme.of(context).inactiveBackgroundColor,
+                      value: _progress,
+                      minHeight: 20.0)),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10.0, top: 15.0),
+                child: Text('Card ${finishedCards + 1} of $cards',
+                    style: const TextStyle(fontSize: 20)),
+              ),
+              Expanded(
+                  child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: _createCards(),
+              )),
+              Container(
+                  padding: const EdgeInsets.only(bottom: 30.0, top: 10.0),
+                  child: FilledButton(
+                      onPressed: !showBack
+                          ? () => setState(() {
+                                showBack = true;
+                              })
+                          : null,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 15.0, vertical: 10.0),
+                        child: const Text("Show Back",
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.w500)),
+                      ))),
+              Container(
+                decoration: BoxDecoration(
+                    color: FluentTheme.of(context).micaBackgroundColor,
+                    border: Border.all(
+                        width: 2,
+                        color: FluentTheme.of(context).micaBackgroundColor),
+                    borderRadius: BorderRadius.circular(10.0)),
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     AnimatedButton(
@@ -157,10 +169,10 @@ class TrainScreenState extends State<TrainScreen>
                         status: Status.done,
                         onPressed: callback)
                   ],
-                )
-              ],
-            )),
-          ),
+                ),
+              )
+            ],
+          )),
         ));
   }
 
@@ -174,68 +186,62 @@ class TrainScreenState extends State<TrainScreen>
   }
 
   List<Widget> _createCards() {
-    final appTheme = context.watch<AppTheme>();
-
     List<Widget> list = [];
 
     list.add(Expanded(
-        child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(bottom: 5.0, left: 30.0),
-          child: Text('Question ${finishedCards + 1}'),
-        ),
-        Container(
-            margin: const EdgeInsets.symmetric(horizontal: 20.0),
-            padding: const EdgeInsets.all(15.0),
-            decoration: BoxDecoration(
-                color: FluentTheme.of(context).acrylicBackgroundColor,
-                border: Border.all(width: 3, color: Colors.blue),
-                borderRadius: BorderRadius.circular(10.0)),
-            child: Row(children: [
-              Text(finished ? "" : questions[finishedCards].questionText,
-                  style: const TextStyle(
-                      fontSize: 20.0, fontWeight: FontWeight.w600))
-            ]))
-      ],
-    )));
+        child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child:
+                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+              const Padding(
+                padding: EdgeInsets.only(bottom: 20.0),
+                child: Text("Question", style: TextStyle(fontSize: 20)),
+              ),
+              Container(
+                  padding: const EdgeInsets.all(15.0),
+                  decoration: BoxDecoration(
+                      color: FluentTheme.of(context).micaBackgroundColor,
+                      border: Border.all(
+                          width: 2,
+                          color: FluentTheme.of(context).micaBackgroundColor),
+                      borderRadius: BorderRadius.circular(10.0)),
+                  child: Row(children: [
+                    Text(finished ? "" : questions[finishedCards].questionText,
+                        style: const TextStyle(
+                            fontSize: 20.0, fontWeight: FontWeight.w600))
+                  ]))
+            ]))));
 
     list.add(Expanded(
-        child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(bottom: 5.0, left: 30.0),
-          child: Text('Answer ${finishedCards + 1}'),
-        ),
-        Container(
-            margin: const EdgeInsets.symmetric(horizontal: 20.0),
-            padding: const EdgeInsets.all(15.0),
-            decoration: BoxDecoration(
-                color: FluentTheme.of(context).acrylicBackgroundColor,
-                border: Border.all(
-                    width: 3,
-                    color: showBack
-                        ? Colors.blue
-                        : Colors.grey.toAccentColor().lighter),
-                borderRadius: BorderRadius.circular(10.0)),
-            child: Row(
-              mainAxisAlignment:
-                  showBack ? MainAxisAlignment.start : MainAxisAlignment.center,
-              children: [
-                Text(
-                    showBack && !finished
-                        ? questions[finishedCards].answerText
-                        : "?",
-                    style: const TextStyle(
-                        fontSize: 20.0, fontWeight: FontWeight.w600))
-              ],
-            ))
-      ],
-    )));
+        child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child:
+                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+              const Padding(
+                padding: EdgeInsets.only(bottom: 20.0),
+                child: Text("Answer", style: TextStyle(fontSize: 20)),
+              ),
+              Container(
+                  padding: const EdgeInsets.all(15.0),
+                  decoration: BoxDecoration(
+                      color: FluentTheme.of(context).micaBackgroundColor,
+                      border: Border.all(
+                          width: 2,
+                          color: FluentTheme.of(context).micaBackgroundColor),
+                      borderRadius: BorderRadius.circular(10.0)),
+                  child: Row(
+                      mainAxisAlignment: showBack
+                          ? MainAxisAlignment.start
+                          : MainAxisAlignment.center,
+                      children: [
+                        Text(
+                            showBack && !finished
+                                ? questions[finishedCards].answerText
+                                : "?",
+                            style: const TextStyle(
+                                fontSize: 20.0, fontWeight: FontWeight.w600))
+                      ]))
+            ]))));
 
     return list;
   }

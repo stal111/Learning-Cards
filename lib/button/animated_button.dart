@@ -18,7 +18,7 @@ class AnimatedButton extends AnimatedWidget {
       required this.status,
       this.padding = false,
       required this.onPressed})
-      :super(
+      : super(
             listenable:
                 Tween<double>(begin: 34.0, end: 44.0).animate(controller)) {
     animation = listenable as Animation<double>;
@@ -38,7 +38,9 @@ class AnimatedButton extends AnimatedWidget {
               style: ButtonStyle(
                   iconSize: ButtonState.all(animation.value),
                   foregroundColor: ButtonState.resolveWith((states) =>
-                      states.isHovering ? CardList.statusToColor[status.index] : Colors.grey.toAccentColor())),
+                      states.isHovering
+                          ? CardList.statusToColor[status.index]
+                          : FluentTheme.of(context).disabledColor)),
               onPressed: () => onPressed(status)),
         ));
   }
