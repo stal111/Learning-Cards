@@ -18,6 +18,12 @@ class SettingsProvider with ChangeNotifier {
 
   bool get randomizeCardOrder => _randomizeCardOrder;
 
+  set randomizeCardOrder(bool value) {
+    _randomizeCardOrder = value;
+
+    notifyListeners();
+  }
+
   void toggleRandomizeCardOrder() {
     _randomizeCardOrder = !_randomizeCardOrder;
 

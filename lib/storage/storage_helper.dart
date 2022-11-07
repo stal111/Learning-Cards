@@ -55,4 +55,10 @@ class StorageHelper {
 
     return list.map((e) => Category.fromJson(e)).toList();
   }
+
+  static deleteAll() async {
+    final preferences = await SharedPreferences.getInstance();
+
+    preferences.clear();
+  }
 }
