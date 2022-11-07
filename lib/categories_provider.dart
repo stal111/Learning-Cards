@@ -1,5 +1,6 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:learning_cards/card_list.dart';
+import 'package:learning_cards/question.dart';
 import 'package:learning_cards/storage/storage_helper.dart';
 
 import 'category.dart';
@@ -78,6 +79,14 @@ class CategoriesProvider with ChangeNotifier {
 
   void updateLastTrained(CardList cardList) {
     cardList.updateLastTrained();
+
+    save();
+
+    notifyListeners();
+  }
+
+  void removeQuestion(CardList cardList, Question question) {
+    cardList.removeQuestion(question);
 
     save();
 

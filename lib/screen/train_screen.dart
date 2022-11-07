@@ -44,13 +44,7 @@ class TrainScreenState extends State<TrainScreen>
 
     final settings = Provider.of<SettingsProvider>(context, listen: false);
 
-    questions = widget.cardList.questions.toList();
-
-    if (settings.randomizeCardOrder) {
-      questions.shuffle(Random());
-    }
-
-    cards = questions.length;
+    initCards(settings);
 
     _controller1 = AnimationController(
         duration: const Duration(milliseconds: 100), vsync: this);
@@ -63,6 +57,16 @@ class TrainScreenState extends State<TrainScreen>
     //_animation = Tween<double>(begin: 34.0, end: 44.0).animate(_controller);
 
     // _controller.forward();
+  }
+
+  void initCards(SettingsProvider settings) {
+    questions = widget.cardList.questions.toList();
+
+    if (settings.randomizeCardOrder) {
+      questions.shuffle(Random());
+    }
+
+    cards = questions.length;
   }
 
   @override
@@ -80,14 +84,7 @@ class TrainScreenState extends State<TrainScreen>
 
     callback(status) => {
           setState(() {
-            finishCard();
-
-            if (_progress >= 1.0) {
-              finished = true;
-
-              categories.updateLastTrained(widget.cardList);
-              Navigator.pop(context);
-            }
+            finishCard(categories);
           }),
         };
 
@@ -116,10 +113,63 @@ class TrainScreenState extends State<TrainScreen>
                           FluentTheme.of(context).inactiveBackgroundColor,
                       value: _progress,
                       minHeight: 20.0)),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 10.0, top: 15.0),
-                child: Text('Card ${finishedCards + 1} of $cards',
-                    style: const TextStyle(fontSize: 20)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Spacer(),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10.0, top: 15.0),
+                    child: Text(
+                      'Card ${finished ? finishedCards : finishedCards + 1} of $cards',
+                      style: const TextStyle(fontSize: 20),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  Expanded(
+                      child: Padding(
+                    padding: const EdgeInsets.only(right: 20.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        IconButton(
+                          icon: const Icon(FluentIcons.edit, size: 20.0),
+                          onPressed: () {},
+                        ),
+                        IconButton(
+                          icon: const Icon(FluentIcons.delete, size: 20.0),
+                          onPressed: () {
+                            Question question = questions[finishedCards];
+
+                            if (questions.length == 1) {
+                              setState(() {
+                                categories.removeQuestion(
+                                    widget.cardList, question);
+                                Navigator.pop(context);
+                              });
+                            } else {
+                              questions.remove(question);
+
+                              cards = questions.length;
+
+                              categories.removeQuestion(
+                                  widget.cardList, question);
+
+                              if (finishedCards != 0) {
+                                finishedCards--;
+                              }
+
+                              setState(() {
+                                showBack = false;
+
+                                _progress = finishedCards / cards;
+                              });
+                            }
+                          },
+                        )
+                      ],
+                    ),
+                  ))
+                ],
               ),
               Expanded(
                   child: Row(
@@ -173,12 +223,19 @@ class TrainScreenState extends State<TrainScreen>
         ));
   }
 
-  void finishCard() {
+  void finishCard(CategoriesProvider categories) {
     finishedCards++;
     showBack = false;
 
     setState(() {
       _progress = finishedCards / cards;
+
+      if (_progress >= 1.0) {
+        finished = true;
+
+        categories.updateLastTrained(widget.cardList);
+        Navigator.pop(context);
+      }
     });
   }
 

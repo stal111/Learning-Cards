@@ -26,6 +26,10 @@ class CardList {
     categories.save();
   }
 
+  void removeQuestion(Question question) {
+    questions.remove(question);
+  }
+
   int getCardsAmount() {
     return questions.length;
   }
