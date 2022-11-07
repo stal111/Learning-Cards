@@ -84,10 +84,11 @@ class TrainScreenState extends State<TrainScreen>
 
             if (_progress >= 1.0) {
               finished = true;
+
+              categories.updateLastTrained(widget.cardList);
+              Navigator.pop(context);
             }
           }),
-          categories.updateLastTrained(widget.cardList),
-          Navigator.pop(context)
         };
 
     return NavigationView(
