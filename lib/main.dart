@@ -3,6 +3,7 @@ import 'package:flutter_acrylic/flutter_acrylic.dart';
 import 'package:learning_cards/button/window_buttons.dart';
 import 'package:learning_cards/card_list.dart';
 import 'package:learning_cards/categories_list.dart';
+import 'package:learning_cards/categories_provider.dart';
 import 'package:learning_cards/category.dart';
 import 'package:learning_cards/multi_value_listenable_builder.dart';
 import 'package:learning_cards/screen/card_list_screen.dart';
@@ -51,7 +52,8 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => AppTheme()),
-        ChangeNotifierProvider(create: (context) => SettingsProvider())
+        ChangeNotifierProvider(create: (context) => SettingsProvider()),
+        ChangeNotifierProvider(create: (context) => CategoriesProvider())
       ],
         builder: (context, _) {
           final appTheme = context.watch<AppTheme>();

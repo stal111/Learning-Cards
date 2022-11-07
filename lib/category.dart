@@ -39,6 +39,7 @@ class Category {
   Map<String, dynamic> toJson() {
     var map = <String, dynamic>{};
     map["name"] = name;
+
     if (cardLists.isNotEmpty) {
       map["cardLists"] =
           jsonEncode(cardLists.map((e) => jsonEncode(e.toJson())).toList());

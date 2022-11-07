@@ -41,8 +41,7 @@ class CardListScreenState extends State<CardListScreen> {
   Widget build(BuildContext context) {
     return MultiProvider(
         providers: [
-          ChangeNotifierProvider(create: (context) => ExpandProvider()),
-          ChangeNotifierProvider(create: (context) => CategoriesProvider())
+          ChangeNotifierProvider(create: (context) => ExpandProvider())
         ],
         builder: (context, child) {
           final categories = context.watch<CategoriesProvider>();

@@ -1,18 +1,17 @@
-import 'dart:ffi';
 import 'dart:math';
-import 'dart:ui';
 
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart' as material;
 import 'package:learning_cards/button/animated_button.dart';
 import 'package:learning_cards/card_list.dart';
+import 'package:learning_cards/category.dart';
 import 'package:learning_cards/question.dart';
 import 'package:learning_cards/settings_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
 
-import 'app_theme.dart';
-import 'button/window_buttons.dart';
+import '../button/window_buttons.dart';
+import '../categories_provider.dart';
 
 class TrainScreen extends StatefulWidget {
   final CardList cardList;
@@ -77,8 +76,7 @@ class TrainScreenState extends State<TrainScreen>
 
   @override
   Widget build(BuildContext context) {
-    final settings = context.watch<SettingsProvider>();
-    final theme = context.watch<AppTheme>();
+    final categories = context.watch<CategoriesProvider>();
 
     callback(status) => {
           setState(() {
@@ -86,12 +84,10 @@ class TrainScreenState extends State<TrainScreen>
 
             if (_progress >= 1.0) {
               finished = true;
-
-              widget.cardList.updateLastTrained();
-
-              Navigator.pop(context);
             }
-          })
+          }),
+          categories.updateLastTrained(widget.cardList),
+          Navigator.pop(context)
         };
 
     return NavigationView(

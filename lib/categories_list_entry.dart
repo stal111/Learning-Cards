@@ -5,7 +5,7 @@ import 'package:learning_cards/categories_list.dart';
 import 'package:learning_cards/main.dart';
 import 'package:learning_cards/category.dart';
 import 'package:learning_cards/screen/card_list_screen.dart';
-import 'package:learning_cards/train_screen.dart';
+import 'package:learning_cards/screen/train_screen.dart';
 import 'package:provider/provider.dart';
 
 import 'categories_provider.dart';
