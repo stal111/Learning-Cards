@@ -41,6 +41,8 @@ class TrainScreenState extends State<TrainScreen>
   final questionController = TextEditingController();
   final answerController = TextEditingController();
 
+  List<int> answerQualities = [];
+
   @override
   initState() {
     super.initState();
@@ -308,6 +310,8 @@ class TrainScreenState extends State<TrainScreen>
     finishedCards++;
     showBack = false;
 
+    answerQualities.add(quality.index);
+
     setState(() {
       _progress = finishedCards / cards;
 
@@ -316,7 +320,7 @@ class TrainScreenState extends State<TrainScreen>
 
         categories.updateLastTrained(widget.cardList);
 
-        updateNextPracticeDate(categories, widget.cardList, quality.index);
+        updateNextPracticeDate(categories, widget.cardList);
 
         Navigator.pop(context);
       }
@@ -384,7 +388,9 @@ class TrainScreenState extends State<TrainScreen>
     return list;
   }
 
-  void updateNextPracticeDate(CategoriesProvider categories, CardList cardList, int quality) {
+  void updateNextPracticeDate(CategoriesProvider categories, CardList cardList) {
+    int quality = getMedian(answerQualities).round();
+
     int repetitions = cardList.repetitions;
     int interval = cardList.interval;
     double easiness = cardList.easinessFactor;
@@ -415,6 +421,15 @@ class TrainScreenState extends State<TrainScreen>
     cardList.status = Status.done;
 
     categories.save();
+  }
+
+  num getMedian(List<int> list) {
+    var middle = list.length ~/ 2;
+    if (list.length % 2 == 1) {
+      return list[middle];
+    } else {
+      return (list[middle - 1] + list[middle]) / 2.0;
+    }
   }
 }
 
