@@ -3,7 +3,6 @@ import 'package:learning_cards/card_list.dart';
 import 'package:provider/provider.dart';
 
 import '../categories_list/card_list_entry.dart';
-import '../categories_list/categories_list_entry.dart';
 import '../categories_provider.dart';
 
 class HomeScreen extends StatelessWidget {

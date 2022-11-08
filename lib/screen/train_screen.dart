@@ -4,7 +4,6 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart' as material;
 import 'package:learning_cards/button/animated_button.dart';
 import 'package:learning_cards/card_list.dart';
-import 'package:learning_cards/category.dart';
 import 'package:learning_cards/question.dart';
 import 'package:learning_cards/settings_provider.dart';
 import 'package:provider/provider.dart';

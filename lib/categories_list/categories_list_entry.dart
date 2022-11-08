@@ -1,11 +1,7 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart' as material;
 import 'package:learning_cards/card_list.dart';
-import 'package:learning_cards/categories_list/categories_list.dart';
-import 'package:learning_cards/main.dart';
 import 'package:learning_cards/category.dart';
-import 'package:learning_cards/screen/card_list_screen.dart';
-import 'package:learning_cards/screen/train_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../categories_provider.dart';

@@ -2,7 +2,6 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:learning_cards/card_list.dart';
 
 import '../screen/train_screen.dart';
-import 'categories_list_entry.dart';
 
 class CardListEntry extends StatefulWidget {
 
