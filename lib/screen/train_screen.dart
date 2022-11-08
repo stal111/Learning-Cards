@@ -12,6 +12,7 @@ import 'package:window_manager/window_manager.dart';
 
 import '../button/window_buttons.dart';
 import '../categories_provider.dart';
+import '../multi_value_listenable_builder.dart';
 
 class TrainScreen extends StatefulWidget {
   final CardList cardList;
@@ -37,6 +38,9 @@ class TrainScreenState extends State<TrainScreen>
 
   bool showBack = false;
   bool finished = false;
+
+  final questionController = TextEditingController();
+  final answerController = TextEditingController();
 
   @override
   initState() {
@@ -74,6 +78,9 @@ class TrainScreenState extends State<TrainScreen>
     _controller1.dispose();
     _controller2.dispose();
     _controller3.dispose();
+
+    questionController.dispose();
+    answerController.dispose();
 
     super.dispose();
   }
@@ -133,39 +140,114 @@ class TrainScreenState extends State<TrainScreen>
                       children: [
                         IconButton(
                           icon: const Icon(FluentIcons.edit, size: 20.0),
-                          onPressed: () {},
+                          onPressed: () {
+                            questionController.text =
+                                questions[finishedCards].questionText;
+                            answerController.text =
+                                questions[finishedCards].answerText;
+
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return ContentDialog(
+                                    title: const Text("Edit Learning Card"),
+                                    content: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        const Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: Padding(
+                                              padding:
+                                                  EdgeInsets.only(bottom: 10.0),
+                                              child: Text(
+                                                  "Enter the new question"),
+                                            )),
+                                        TextBox(
+                                            controller: questionController,
+                                            expands: true,
+                                            minLines: null,
+                                            maxLines: null,
+                                            padding: const EdgeInsets.only(
+                                                top: 5.0, bottom: 10.0)),
+                                        const Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: Padding(
+                                              padding:
+                                                  EdgeInsets.only(bottom: 10.0),
+                                              child:
+                                                  Text("Enter the new answer"),
+                                            )),
+                                        TextBox(
+                                            controller: answerController,
+                                            expands: true,
+                                            minLines: null,
+                                            maxLines: null,
+                                            padding: const EdgeInsets.only(
+                                                top: 5.0, bottom: 10.0))
+                                      ],
+                                    ),
+                                    actions: [
+                                      Button(
+                                          child: const Text("Cancel"),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          }),
+                                      MultiValueListenableBuilder(
+                                        valueListenables: [
+                                          questionController,
+                                          answerController,
+                                        ],
+                                        builder: (context, values) {
+                                          return FilledButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                questions[finishedCards]
+                                                        .questionText =
+                                                    questionController.text;
+                                                questions[finishedCards]
+                                                        .answerText =
+                                                    answerController.text;
+
+                                                categories.save();
+                                              });
+
+                                              Navigator.pop(context);
+                                            },
+                                            child: const Text("Edit"),
+                                          );
+                                        },
+                                      ),
+                                    ]);
+                              },
+                            );
+                          },
                         ),
                         IconButton(
-                          icon: const Icon(FluentIcons.delete, size: 20.0),
-                          onPressed: () {
-                            Question question = questions[finishedCards];
-
-                            if (questions.length == 1) {
-                              setState(() {
+                            icon: const Icon(FluentIcons.delete, size: 20.0),
+                            onPressed: () {
+                              Question question = questions[finishedCards];
+                              if (questions.length == 1) {
+                                setState(() {
+                                  categories.removeQuestion(
+                                      widget.cardList, question);
+                                  Navigator.pop(context);
+                                });
+                              } else {
+                                questions.remove(question);
+                                cards = questions.length;
                                 categories.removeQuestion(
                                     widget.cardList, question);
-                                Navigator.pop(context);
-                              });
-                            } else {
-                              questions.remove(question);
-
-                              cards = questions.length;
-
-                              categories.removeQuestion(
-                                  widget.cardList, question);
-
-                              if (finishedCards != 0) {
-                                finishedCards--;
+                                if (finishedCards != 0) {
+                                  finishedCards--;
+                                }
+                                setState(() {
+                                  showBack = false;
+                                  _progress = finishedCards / cards;
+                                });
                               }
-
-                              setState(() {
-                                showBack = false;
-
-                                _progress = finishedCards / cards;
-                              });
-                            }
-                          },
-                        )
+                            })
                       ],
                     ),
                   ))
