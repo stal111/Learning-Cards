@@ -1,10 +1,10 @@
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:intl/intl.dart';
 import 'package:learning_cards/card_list.dart';
 
 import '../screen/train_screen.dart';
 
 class CardListEntry extends StatefulWidget {
-
   final CardList cardList;
 
   const CardListEntry(this.cardList, {super.key});
@@ -16,7 +16,6 @@ class CardListEntry extends StatefulWidget {
 }
 
 class ListEntryState extends State<CardListEntry> {
-
   @override
   Widget build(BuildContext context) {
     final theme = FluentTheme.of(context);
@@ -60,8 +59,11 @@ class ListEntryState extends State<CardListEntry> {
               ),
             ),
             Text("(${cardList.getCardsAmount()} Cards)"),
-            Icon(cardList.status.icon,
-                color: CardList.statusToColor[cardList.status.index]),
+            Tooltip(
+                message:
+                    "${cardList.status == Status.needsTraining ? "Due since " : "Next due on "}${DateFormat.yMMMd().format(cardList.nextPractiseDay)} - ${DateFormat.Hm().format(cardList.nextPractiseDay)}",
+                child: Icon(cardList.status.icon,
+                    color: CardList.statusToColor[cardList.status.index])),
             Padding(
                 padding: const EdgeInsets.only(left: 20.0),
                 child: Text(cardList.getFormattedTime()))
