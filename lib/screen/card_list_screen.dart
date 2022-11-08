@@ -4,7 +4,7 @@ import 'package:learning_cards/expand_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../card_list.dart';
-import '../categories_list.dart';
+import '../categories_list/categories_list.dart';
 import '../category.dart';
 import '../multi_value_listenable_builder.dart';
 

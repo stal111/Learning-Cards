@@ -1,15 +1,16 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart' as material;
 import 'package:learning_cards/card_list.dart';
-import 'package:learning_cards/categories_list.dart';
+import 'package:learning_cards/categories_list/categories_list.dart';
 import 'package:learning_cards/main.dart';
 import 'package:learning_cards/category.dart';
 import 'package:learning_cards/screen/card_list_screen.dart';
 import 'package:learning_cards/screen/train_screen.dart';
 import 'package:provider/provider.dart';
 
-import 'categories_provider.dart';
-import 'expand_provider.dart';
+import '../categories_provider.dart';
+import '../expand_provider.dart';
+import 'card_list_entry.dart';
 
 typedef StringCallback = void Function(String);
 typedef CategoryCallback = void Function(Category);
@@ -204,52 +205,7 @@ class ListEntryState extends State<CategoriesListEntry> {
 
     if (widget.category.cardLists.isNotEmpty && expanded) {
       for (var element in widget.category.cardLists) {
-        list.add(Container(
-            margin: const EdgeInsets.all(4.0),
-            child: Table(children: [
-              TableRow(children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 40.0),
-                  child: HoverButton(
-                    onPressed: () {
-                      if (element.questions.isNotEmpty) {
-                        setState(() {
-                          Navigator.push(
-                              context,
-                              FluentPageRoute(
-                                  builder: (context) =>
-                                      TrainScreen(cardList: element)));
-                        });
-                      }
-                    },
-                    semanticLabel: name,
-                    builder: (context, states) {
-                      return AnimatedContainer(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 2.0,
-                          horizontal: 4.0,
-                        ),
-                        decoration: BoxDecoration(
-                            color: ButtonThemeData.uncheckedInputColor(
-                                theme, states,
-                                transparentWhenNone: true),
-                            borderRadius: BorderRadius.circular(6)),
-                        duration: theme.fastAnimationDuration,
-                        curve: theme.animationCurve,
-                        child: Text(element.name,
-                            style: const TextStyle(fontSize: 16)),
-                      );
-                    },
-                  ),
-                ),
-                Text("(${element.getCardsAmount()} Cards)"),
-                Icon(element.status.icon,
-                    color: CardList.statusToColor[element.status.index]),
-                Padding(
-                    padding: const EdgeInsets.only(left: 20.0),
-                    child: Text(element.getFormattedTime()))
-              ]),
-            ])));
+        list.add(CardListEntry(element));
       }
     }
 

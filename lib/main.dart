@@ -2,7 +2,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_acrylic/flutter_acrylic.dart';
 import 'package:learning_cards/button/window_buttons.dart';
 import 'package:learning_cards/card_list.dart';
-import 'package:learning_cards/categories_list.dart';
+import 'package:learning_cards/categories_list/categories_list.dart';
 import 'package:learning_cards/categories_provider.dart';
 import 'package:learning_cards/category.dart';
 import 'package:learning_cards/multi_value_listenable_builder.dart';
@@ -16,7 +16,7 @@ import 'package:system_theme/system_theme.dart';
 import 'package:window_manager/window_manager.dart';
 
 import 'app_theme.dart';
-import 'categories_list_entry.dart';
+import 'categories_list/categories_list_entry.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
