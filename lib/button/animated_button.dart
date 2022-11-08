@@ -6,6 +6,13 @@ import 'package:learning_cards/screen/train_screen.dart';
 typedef AnswerQualityCallback = void Function(AnswerQuality);
 
 class AnimatedButton extends AnimatedWidget {
+
+  static final Map<int, AccentColor> qualityToColor = {
+    0: Colors.red,
+    1: Colors.grey.toAccentColor(),
+    2: Colors.green
+  };
+
   AnimationController controller;
   late Animation<double> animation;
   AnswerQuality quality;
@@ -40,7 +47,7 @@ class AnimatedButton extends AnimatedWidget {
                   iconSize: ButtonState.all(animation.value),
                   foregroundColor: ButtonState.resolveWith((states) =>
                       states.isHovering
-                          ? CardList.statusToColor[quality.index]
+                          ? AnimatedButton.qualityToColor[quality.index]
                           : FluentTheme.of(context).disabledColor)),
               onPressed: () => onPressed(quality)),
         ));

@@ -434,9 +434,9 @@ class TrainScreenState extends State<TrainScreen>
 }
 
 enum AnswerQuality {
-  good(FluentIcons.emoji2),
+  meh(FluentIcons.emoji_disappointed),
   okay(FluentIcons.emoji_neutral),
-  meh(FluentIcons.emoji_disappointed);
+  good(FluentIcons.emoji2);
 
   final IconData icon;
 

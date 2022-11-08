@@ -20,7 +20,7 @@ class CardList {
 
   static final Map<int, AccentColor> statusToColor = {
     0: Colors.red,
-    1: Colors.green.toAccentColor()
+    1: Colors.green
   };
 
   CardList(
