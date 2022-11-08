@@ -89,9 +89,9 @@ class TrainScreenState extends State<TrainScreen>
   Widget build(BuildContext context) {
     final categories = context.watch<CategoriesProvider>();
 
-    callback(status) => {
+    callback(AnswerQuality quality) => {
           setState(() {
-            finishCard(categories);
+            finishCard(categories, quality);
           }),
         };
 
@@ -285,17 +285,17 @@ class TrainScreenState extends State<TrainScreen>
                   children: [
                     AnimatedButton(
                       controller: _controller1,
-                      status: Status.needsPractise,
+                      quality: AnswerQuality.meh,
                       onPressed: callback,
                     ),
                     AnimatedButton(
                         controller: _controller2,
-                        status: Status.okay,
+                        quality: AnswerQuality.okay,
                         onPressed: callback,
                         padding: true),
                     AnimatedButton(
                         controller: _controller3,
-                        status: Status.done,
+                        quality: AnswerQuality.good,
                         onPressed: callback)
                   ],
                 ),
@@ -305,7 +305,7 @@ class TrainScreenState extends State<TrainScreen>
         ));
   }
 
-  void finishCard(CategoriesProvider categories) {
+  void finishCard(CategoriesProvider categories, AnswerQuality quality) {
     finishedCards++;
     showBack = false;
 
@@ -316,6 +316,9 @@ class TrainScreenState extends State<TrainScreen>
         finished = true;
 
         categories.updateLastTrained(widget.cardList);
+
+        updateNextPracticeDate(categories, widget.cardList, quality.index);
+
         Navigator.pop(context);
       }
     });
@@ -381,4 +384,47 @@ class TrainScreenState extends State<TrainScreen>
 
     return list;
   }
+
+  void updateNextPracticeDate(CategoriesProvider categories, CardList cardList, int quality) {
+    int repetitions = cardList.repetitions;
+    int interval = cardList.interval;
+    double easiness = cardList.easinessFactor;
+
+    if (quality == 0) {
+      repetitions = 0;
+    } else if (quality == 2) {
+      repetitions += 1;
+    }
+
+    easiness = max(1.3, easiness + 0.1 - (3.0 - quality) * (0.08 + (3.0 - quality) * 0.02));
+
+    if (repetitions <= 1) {
+      interval = 1;
+    } else if (repetitions == 2) {
+      interval = 6;
+    } else {
+      interval = (interval * easiness).round();
+    }
+
+    int millisecondsInDay = 60 * 60 * 24 * 1000;
+    DateTime nextPracticeDate = DateTime.now().add(Duration(milliseconds: millisecondsInDay * interval));
+
+    cardList.nextPractiseDay = nextPracticeDate;
+    cardList.repetitions = repetitions;
+    cardList.interval = interval;
+
+    cardList.status = Status.done;
+
+    categories.save();
+  }
+}
+
+enum AnswerQuality {
+  good(FluentIcons.emoji2),
+  okay(FluentIcons.emoji_neutral),
+  meh(FluentIcons.emoji_disappointed);
+
+  final IconData icon;
+
+  const AnswerQuality(this.icon);
 }

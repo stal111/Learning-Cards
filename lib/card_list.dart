@@ -11,13 +11,23 @@ class CardList {
   DateTime? _lastTrained;
   List<Question> questions = [];
 
+  int repetitions;
+  int interval;
+
+  final double easinessFactor = 1.3;
+
+  DateTime nextPractiseDay = DateTime.now();
+
   static final Map<int, AccentColor> statusToColor = {
-    0: Colors.green,
-    1: Colors.grey.toAccentColor(),
-    2: Colors.red
+    0: Colors.red,
+    1: Colors.green.toAccentColor()
   };
 
-  CardList({required this.name, required this.status});
+  CardList(
+      {required this.name,
+      this.status = Status.needsTraining,
+      this.repetitions = 0,
+      this.interval = 1});
 
   void addQuestion(
       CategoriesProvider categories, String questionText, String answerText) {
@@ -34,14 +44,10 @@ class CardList {
     return questions.length;
   }
 
-  void cycleStatus() {
-    int index = status.index + 1;
-
-    if (index >= Status.values.length) {
-      index = 0;
+  void updateStatus() {
+    if (DateTime.now().isAfter(nextPractiseDay)) {
+      status = Status.needsTraining;
     }
-
-    status = Status.values[index];
   }
 
   void updateLastTrained() {
@@ -60,7 +66,11 @@ class CardList {
         _lastTrained = json.containsKey("lastTrained")
             ? DateTime.tryParse(json["lastTrained"])
             : null,
-        questions = decodeQuestions(json);
+        questions = decodeQuestions(json),
+        repetitions = json["repetitions"],
+        interval = json["interval"],
+        nextPractiseDay =
+            DateTime.tryParse(json["nextPractiseDay"]) ?? DateTime.now();
 
   static List<Question> decodeQuestions(Map<dynamic, dynamic> json) {
     if (json.containsKey("questions")) {
@@ -86,14 +96,17 @@ class CardList {
           jsonEncode(questions.map((e) => jsonEncode(e.toJson())).toList());
     }
 
+    map["repetitions"] = repetitions;
+    map["interval"] = interval;
+    map["nextPractiseDay"] = nextPractiseDay.toIso8601String();
+
     return map;
   }
 }
 
 enum Status {
-  done(FluentIcons.emoji2),
-  okay(FluentIcons.emoji_neutral),
-  needsPractise(FluentIcons.emoji_disappointed);
+  needsTraining(FluentIcons.stopwatch),
+  done(FluentIcons.check_mark);
 
   final IconData icon;
 

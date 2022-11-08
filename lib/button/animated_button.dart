@@ -1,21 +1,22 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart' as material;
 import 'package:learning_cards/card_list.dart';
+import 'package:learning_cards/screen/train_screen.dart';
 
-typedef StatusCallback = void Function(Status);
+typedef AnswerQualityCallback = void Function(AnswerQuality);
 
 class AnimatedButton extends AnimatedWidget {
   AnimationController controller;
   late Animation<double> animation;
-  Status status;
+  AnswerQuality quality;
   bool padding;
 
-  StatusCallback onPressed;
+  AnswerQualityCallback onPressed;
 
   AnimatedButton(
       {super.key,
       required this.controller,
-      required this.status,
+      required this.quality,
       this.padding = false,
       required this.onPressed})
       : super(
@@ -34,14 +35,14 @@ class AnimatedButton extends AnimatedWidget {
           onEnter: (event) => controller.forward(),
           onExit: (event) => controller.reverse(),
           child: IconButton(
-              icon: Icon(status.icon),
+              icon: Icon(quality.icon),
               style: ButtonStyle(
                   iconSize: ButtonState.all(animation.value),
                   foregroundColor: ButtonState.resolveWith((states) =>
                       states.isHovering
-                          ? CardList.statusToColor[status.index]
+                          ? CardList.statusToColor[quality.index]
                           : FluentTheme.of(context).disabledColor)),
-              onPressed: () => onPressed(status)),
+              onPressed: () => onPressed(quality)),
         ));
   }
 }

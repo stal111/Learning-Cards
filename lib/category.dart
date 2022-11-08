@@ -31,7 +31,13 @@ class Category {
     if (json.containsKey("cardLists")) {
       List<dynamic> list = jsonDecode(json["cardLists"]);
 
-      return list.map((e) => CardList.fromJson(jsonDecode(e))).toList();
+      return list.map((e) {
+        CardList cardList = CardList.fromJson(jsonDecode(e));
+
+        cardList.updateStatus();
+
+        return cardList;
+      }).toList();
     }
     return [];
   }

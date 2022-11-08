@@ -184,8 +184,7 @@ class ListEntryState extends State<CategoriesListEntry> {
                                                     CardList(
                                                         name: widget
                                                             .inputController
-                                                            .text,
-                                                        status: Status.done));
+                                                            .text));
                                               });
 
                                               widget.updateMain();
@@ -220,7 +219,6 @@ class ListEntryState extends State<CategoriesListEntry> {
                               FluentPageRoute(
                                   builder: (context) =>
                                       TrainScreen(cardList: element)));
-                          element.cycleStatus();
                         });
                       }
                     },
