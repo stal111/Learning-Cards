@@ -85,6 +85,22 @@ class CategoriesProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void renameCardList(CardList cardList, String newName) {
+    cardList.name = newName;
+
+    save();
+
+    notifyListeners();
+  }
+
+  void removeCardList(Category category, CardList cardList) {
+    category.cardLists.remove(cardList);
+
+    save();
+
+    notifyListeners();
+  }
+
   void removeQuestion(CardList cardList, Question question) {
     cardList.removeQuestion(question);
 

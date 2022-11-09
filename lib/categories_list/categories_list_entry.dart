@@ -30,7 +30,7 @@ class CategoriesListEntry extends StatefulWidget {
 }
 
 class ListEntryState extends State<CategoriesListEntry> {
-  var _tapPosition;
+  late Offset _tapPosition;
 
   @override
   Widget build(BuildContext context) {
@@ -201,7 +201,7 @@ class ListEntryState extends State<CategoriesListEntry> {
 
     if (widget.category.cardLists.isNotEmpty && expanded) {
       for (var element in widget.category.cardLists) {
-        list.add(CardListEntry(element));
+        list.add(CardListEntry(categories, widget.category, element));
       }
     }
 

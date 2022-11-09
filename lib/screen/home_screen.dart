@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../categories_list/card_list_entry.dart';
 import '../categories_provider.dart';
+import '../category.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -14,12 +15,12 @@ class HomeScreen extends StatelessWidget {
 
     return FutureBuilder(
         builder: (context, snapshot) {
-          List<CardList> cardLists = [];
+          Map<CardList, Category> cardLists = {};
 
           for (var category in categories.categories) {
             for (var element in category.cardLists) {
               if (element.status == Status.needsTraining) {
-                cardLists.add(element);
+                cardLists[element] = category;
               }
             }
           }
@@ -51,7 +52,7 @@ class HomeScreen extends StatelessWidget {
                       scrollDirection: Axis.vertical,
                       padding: const EdgeInsets.all(10),
                       children: List.generate(cardLists.length, (index) {
-                        return CardListEntry(cardLists[index]);
+                        return CardListEntry(categories, cardLists.values.toList()[index], cardLists.keys.toList()[index]);
                       })))
             ],
           );
