@@ -201,8 +201,7 @@ class CardListScreenState extends State<CardListScreen> {
   }
 
   bool isValidCategory(CategoriesProvider provider, String category) {
-    if (category.isEmpty ||
-        provider.categories
+    if (category.isEmpty || provider.categories
             .where((element) => element.name == category)
             .isNotEmpty) {
       return false;
