@@ -65,7 +65,7 @@ class MyApp extends StatelessWidget {
                     themeMode: snapshot.data as ThemeMode,
                     debugShowCheckedModeBanner: false,
                     color: appTheme.color,
-                    darkTheme: ThemeData(
+                    darkTheme: FluentThemeData(
                       brightness: Brightness.dark,
                       accentColor: appTheme.color,
                       visualDensity: VisualDensity.standard,
@@ -73,7 +73,7 @@ class MyApp extends StatelessWidget {
                         glowFactor: is10footScreen() ? 2.0 : 0.0,
                       ),
                     ),
-                    theme: ThemeData(
+                    theme: FluentThemeData(
                       accentColor: appTheme.color,
                       visualDensity: VisualDensity.standard,
                       focusTheme: FocusThemeData(
