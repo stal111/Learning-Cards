@@ -48,7 +48,7 @@ class AnimatedButton extends AnimatedWidget {
                   foregroundColor: ButtonState.resolveWith((states) =>
                       states.isHovering
                           ? AnimatedButton.qualityToColor[quality.index]
-                          : FluentTheme.of(context).disabledColor)),
+                          : FluentTheme.of(context).resources.textFillColorDisabled)),
               onPressed: () => onPressed(quality)),
         ));
   }

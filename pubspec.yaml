@@ -18,7 +18,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.17.0 <3.0.0"
+  sdk: ">=3.1.0 <4.0.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -30,9 +30,9 @@ dependencies:
   flutter:
     sdk: flutter
 
-  fluent_ui: ^4.4.2
-  intl: ^0.17.0
-  window_manager: ^0.2.7
+  fluent_ui: ^4.7.6
+  intl: ^0.18.1
+  window_manager: ^0.3.7
   system_theme: ^2.0.0
   provider: ^6.0.4
   flutter_acrylic: ^1.0.0+2
@@ -46,7 +46,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  msix: ^3.6.1
+  msix: ^3.9.2
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

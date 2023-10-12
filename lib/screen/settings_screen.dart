@@ -56,10 +56,10 @@ class SettingsScreen extends StatelessWidget {
   }
 
   static Color buttonColor(BuildContext context, Set<ButtonStates> states) {
-    ThemeData theme = FluentTheme.of(context);
+    FluentThemeData theme = FluentTheme.of(context);
 
     if (states.isDisabled) {
-      return theme.disabledColor;
+      return theme.resources.textFillColorDisabled;
     } else if (states.isPressing) {
       return Colors.red.tertiaryBrushFor(theme.brightness);
     } else if (states.isHovering) {
